@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QR cards</title>
+<link rel="stylesheet" href="/photo-app/photo.css">
+<script src="/photo-app/photo.js"></script>
+</head>
+<body>
+<div class="print-bar"><button class="btn" onclick="window.print()">Print cards</button> <span class="hint">Prints two cards on A4. Cut in half and put them on the tables.</span></div>
+<div class="sheet" id="sheet"></div>
+<template id="tpl">
+  <div class="pcard">
+    <h1></h1>
+    <p></p>
+    <div class="qr"><img src="/api/qr.svg" alt="QR code to add photos"></div>
+    <div class="url"></div>
+  </div>
+</template>
+<script>
+(async function(){
+  const s = await fetch("/api/settings").then(r => r.json()).catch(() => ({}));
+  const url = await fetch("/api/guest-url").then(r => r.json()).then(j => j.url).catch(() => location.origin);
+  PW.apply(s);
+  for(let i = 0; i < 2; i++){
+    const c = document.getElementById("tpl").content.cloneNode(true);
+    c.querySelector("h1").textContent = PW.t("cardTitle");
+    c.querySelector("p").textContent = PW.t("cardText");
+    c.querySelector(".url").textContent = (url || "").replace(/^https?:\/\//, "").replace(/\/$/, "");
+    document.getElementById("sheet").append(c);
+  }
+  document.title = PW.t("cardTitle");
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Host tools: the storybook</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alegreya:wght@400;500;700&family=Grandstander:wght@600;700;800&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+<style>
+.words-group{border:2px solid var(--line);border-radius:.9rem;padding:.2rem 1rem .9rem;margin-top:.8rem;background:rgba(255,255,255,.5)}
+.words-group summary{cursor:pointer;font-weight:800;padding:.7rem 0;font-family:var(--display)}
+.words-group label{display:block;margin-top:.8rem}
+.words-group textarea.field{resize:vertical;min-height:5rem;line-height:1.4}
+.words-group .field{width:100%;max-width:100%;margin-left:0;margin-right:0;box-sizing:border-box}
+.kind-edit{border-top:2px dashed var(--line);margin-top:1rem;padding-top:.4rem}
+.kind-on{display:flex !important;align-items:center;gap:.5rem;font-weight:800}
+.kind-on input{width:1.3rem;height:1.3rem}
+select.field{appearance:auto}
+</style>
+</head>
+<body>
+<main class="page host" style="padding-top:2rem">
+ <section class="book" style="margin-top:0">
+  <h1>Host tools</h1>
+  <div id="login">
+    <p class="lede">Open the host link from your email, or paste the host key from it here.</p>
+    <label for="key">Host key</label>
+    <input class="field" type="password" id="key" autocomplete="current-password">
+    <div style="margin-top:1.2rem"><button class="btn btn-main" id="unlock">Unlock</button></div>
+    <div class="status" id="login-status" role="status"></div>
+  </div>
+
+  <div id="tools" class="hidden">
+    <p class="lede">Open <a href="/tv" target="_blank">the TV screen</a> on the TV, and <a href="/card" target="_blank">print a QR card</a> for the tables.</p>
+    <p class="hint" id="storage-note"></p>
+
+    <div class="section">
+      <h2>Birthday details</h2>
+      <p class="hint">The name shows on the TV, guests' phones and the QR cards.</p>
+      <label for="name">Child's name</label>
+      <input class="field" type="text" id="name" maxlength="40">
+      <button class="btn btn-soft" id="save" style="margin-top:1rem">Save name</button>
+      <div class="status" id="save-status" role="status"></div>
+    </div>
+
+    <div class="section">
+      <h2>Your theme</h2>
+      <p class="lede" id="theme-name" style="margin:.2rem 0"></p>
+      <p class="hint" id="theme-tagline"></p>
+    </div>
+
+    <div class="section">
+      <h2>Words on the screens</h2>
+      <p class="hint">Change any wording to suit your party. Type <b>{name}</b> for the child's name and <b>{birthday}</b> for "first birthday", "second birthday" and so on. Leave a box empty to use the original wording.</p>
+      <div id="words"></div>
+      <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem">
+        <button class="btn btn-main" style="width:auto" id="words-save">Save wording</button>
+        <button class="btn btn-soft" id="words-reset">Put back the original wording</button>
+      </div>
+      <div class="status" id="words-status" role="status"></div>
+    </div>
+
+    <div class="section">
+      <h2>TV sound</h2>
+      <p class="hint">Changes reach the TV within a few seconds. The TV still needs one click (or any key) on the day before browsers allow it to make sound.</p>
+      <div class="toggles">
+        <label class="switch"><input type="checkbox" id="snd-music"><span class="track"><span class="knob"></span></span><span class="switch-text"><b>Music box</b><small>Soft nursery tunes in the background</small></span></label>
+        <label class="switch"><input type="checkbox" id="snd-sfx"><span class="track"><span class="knob"></span></span><span class="switch-text"><b>Sound effects</b><small>New-page chime, the cow's moo, and friends</small></span></label>
+        <label class="switch"><input type="checkbox" id="snd-simple"><span class="track"><span class="knob"></span></span><span class="switch-text"><b>Older TV mode</b><small>Plays pre-recorded sounds instead. Turn on if the TV stays silent.</small></span></label>
+      </div>
+      <label>How often the characters do something</label>
+      <div class="seg" role="radiogroup" aria-label="How often the characters do something">
+        <button type="button" class="seg-btn" data-gap="20" role="radio">Often<small>about every 20s</small></button>
+        <button type="button" class="seg-btn" data-gap="45" role="radio">Normal<small>about every 45s</small></button>
+        <button type="button" class="seg-btn" data-gap="90" role="radio">Now and then<small>about every 90s</small></button>
+      </div>
+      <label for="snd-vol">Volume <span id="snd-vol-val"></span></label>
+      <input type="range" id="snd-vol" min="0" max="100" step="5" class="slider">
+      <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem">
+        <button class="btn btn-soft" id="snd-mute">Mute everything</button>
+        <button class="btn btn-soft" id="snd-test">Play a test chime on the TV</button>
+      </div>
+      <div class="status" id="snd-status" role="status"></div>
+    </div>
+
+    <div class="section">
+      <h2>All pages (<span id="count">0</span>)</h2>
+      <p class="hint">Remove anything that shouldn't be on the TV. After the party, download the storybook to print or keep.</p>
+      <a class="btn btn-soft" id="keepsake" href="#" style="margin-top:.6rem">Download the printable storybook (PDF)</a>
+      <ul class="list" id="list"></ul>
+    </div>
+  </div>
+ </section>
+</main>
+<script src="/shared.js"></script>
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  let key = "";
+  try{ key = localStorage.getItem("n18-host") || ""; }catch(e){}
+  // The emailed host link carries ?key=… — remember it, then tidy the address bar.
+  const urlKey = new URLSearchParams(location.search).get("key");
+  if(urlKey){ key = urlKey; try{ localStorage.setItem("n18-host", key); }catch(e){} history.replaceState(null, "", location.pathname); }
+  const api = (url, opt={}) => fetch(url, { ...opt, headers:{ "Content-Type":"application/json", "x-host-key":key, ...(opt.headers||{}) } });
+
+  async function unlock(){
+    $("login-status").textContent = "Checking…";
+    try{
+      const r = await api("/api/host-check");
+      const j = await r.json().catch(()=>({}));
+      if(!r.ok) throw new Error(j.error || "That host key isn't right.");
+      try{ localStorage.setItem("n18-host", key); }catch(e){}
+      $("login").classList.add("hidden"); $("tools").classList.remove("hidden");
+      $("storage-note").textContent = j.storage === "postgres"
+        ? "Pages are saved in your database."
+        : "Pages are saved in your database.";
+      $("keepsake").href = "/api/storybook.pdf?key=" + encodeURIComponent(key);
+      load(); setInterval(load, 5000);
+    }catch(e){ $("login-status").textContent = e.message; }
+  }
+  $("unlock").addEventListener("click", ()=>{ key = $("key").value.trim(); unlock(); });
+  $("key").addEventListener("keydown", e=>{ if(e.key==="Enter"){ key = $("key").value.trim(); unlock(); } });
+  if(key) unlock();
+
+  let settingsLoaded = false;
+  async function load(){
+    try{
+      const j = await (await fetch("/api/state", { cache:"no-store" })).json();
+      N18.apply(j.settings || {});
+      if(!settingsLoaded){ $("name").value = j.settings.name || ""; showLook(j.settings); showWords(j.settings); settingsLoaded = true; }
+      if(!soundBusy) showSound(j.settings);
+      render(j.notes || []);
+    }catch(e){}
+  }
+  function render(notes){
+    $("count").textContent = notes.length;
+    const items = notes.slice().sort((a,b)=>b.createdAt-a.createdAt).map(n=>{
+      const k = N18.kindOf(n.kind);
+      const li = document.createElement("li"); li.className = "k-" + k;
+      const body = document.createElement("div");
+      const p = document.createElement("p"); p.textContent = n.text;
+      const s = document.createElement("small"); s.textContent = (n.from || "A guest") + ", " + N18.label(k).toLowerCase();
+      body.append(p,s);
+      const rm = document.createElement("button"); rm.className = "remove"; rm.textContent = "Remove";
+      rm.addEventListener("click", async ()=>{
+        if(!rm.classList.contains("armed")){ rm.classList.add("armed"); rm.textContent = "Tap again to remove"; setTimeout(()=>{ rm.classList.remove("armed"); rm.textContent = "Remove"; }, 4000); return; }
+        rm.disabled = true;
+        const r = await api("/api/notes/" + encodeURIComponent(n.id), { method:"DELETE" }).catch(()=>null);
+        if(r && r.ok) li.remove(); else { rm.disabled = false; rm.textContent = "Couldn't remove. Try again"; }
+      });
+      li.append(body, rm); return li;
+    });
+    $("list").replaceChildren(...items);
+  }
+  // ---- TV sound ----
+  let soundBusy = false, volT = null;
+  function showSound(s){
+    $("snd-music").checked = s.music !== "off";
+    $("snd-sfx").checked = s.sfx !== "off";
+    $("snd-simple").checked = s.soundmode === "simple";
+    document.querySelectorAll(".seg-btn").forEach(b => b.setAttribute("aria-checked", String(b.dataset.gap === String(s.fxgap || "45"))));
+    const v = s.volume === undefined ? 80 : Number(s.volume);
+    if(document.activeElement !== $("snd-vol")) $("snd-vol").value = v;
+    $("snd-vol-val").textContent = $("snd-vol").value + "%";
+    $("snd-mute").textContent = (s.music === "off" && s.sfx === "off") ? "Turn sound back on" : "Mute everything";
+  }
+  async function saveSound(body, msg){
+    soundBusy = true; $("snd-status").textContent = "Saving…";
+    const r = await api("/api/settings", { method:"PUT", body:JSON.stringify(body) }).catch(()=>null);
+    if(r && r.ok){ showSound(await r.json()); $("snd-status").textContent = msg || "Saved. The TV updates within a few seconds."; }
+    else $("snd-status").textContent = "That didn't save. Try again.";
+    soundBusy = false;
+  }
+  $("snd-music").addEventListener("change", e=>saveSound({ music: e.target.checked ? "on" : "off" }));
+  $("snd-sfx").addEventListener("change", e=>saveSound({ sfx: e.target.checked ? "on" : "off" }));
+  $("snd-simple").addEventListener("change", e=>saveSound({ soundmode: e.target.checked ? "simple" : "auto" }, e.target.checked ? "Older TV mode is on. Click the TV's sound button again if it asks." : "Back to automatic sound."));
+  document.querySelectorAll(".seg-btn").forEach(b => b.addEventListener("click", ()=>saveSound({ fxgap: b.dataset.gap })));
+  $("snd-vol").addEventListener("input", e=>{ $("snd-vol-val").textContent = e.target.value + "%"; clearTimeout(volT); volT = setTimeout(()=>saveSound({ volume: e.target.value }), 350); });
+  $("snd-mute").addEventListener("click", ()=>{
+    const allOff = !$("snd-music").checked && !$("snd-sfx").checked;
+    saveSound(allOff ? { music:"on", sfx:"on" } : { music:"off", sfx:"off" });
+  });
+  $("snd-test").addEventListener("click", ()=>saveSound({ ping:true }, "Sent. The TV should chime within a few seconds (if its sound has been clicked on)."));
+
+  $("save").addEventListener("click", async ()=>{
+    $("save-status").textContent = "Saving…";
+    const r = await api("/api/settings", { method:"PUT", body:JSON.stringify({ name:$("name").value }) }).catch(()=>null);
+    $("save-status").textContent = r && r.ok ? "Saved. The TV updates within a few seconds." : "Details didn't save. Try again.";
+  });
+
+  // ---- Theme (set when the party was bought) ----
+  const TH = window.PARTY_THEME || { name:"", tagline:"" };
+  $("theme-name").textContent = TH.name; $("theme-tagline").textContent = TH.tagline + ". Made for your party.";
+  function showLook(){}
+
+  // ---- Words on the screens ----
+  const GROUPS = [
+    ["On the TV", [["tvTitle","Big heading"],["qrLabel","Words under the QR code"],["signOff","Before each guest's name"],["emptyBanner","First page heading (before any messages)"],["emptyText","First page message (before any messages)",1]]],
+    ["On guests' phones", [["guestTitle","Heading"],["guestIntro","Welcome message",1],["sendButton","Send button"],["thanksTitle","After sending: heading"],["thanksText","After sending: message",1]]],
+    ["On the printed table cards", [["cardTitle","Line under “Scan here”"]]]
+  ];
+  const KIND_NAMES = { wish:"Star", advice:"Owl", guess:"Crystal ball", today:"Balloon" };
+  const LONG = 300, SHORT = 80;
+  (function buildWords(){
+    const box = $("words");
+    GROUPS.forEach(([title, fields]) => {
+      const d = document.createElement("details"); d.className = "words-group";
+      d.innerHTML = "<summary></summary>"; d.querySelector("summary").textContent = title;
+      fields.forEach(([k, label, long]) => {
+        const id = "w-" + k;
+        const l = document.createElement("label"); l.htmlFor = id; l.textContent = label;
+        const f = document.createElement(long ? "textarea" : "input");
+        f.className = "field"; f.id = id; f.dataset.key = k; f.maxLength = long ? LONG : SHORT; f.placeholder = N18.TEXT_DEFAULTS[k];
+        if(long) f.rows = 3;
+        d.append(l, f);
+      });
+      box.append(d);
+    });
+    const d = document.createElement("details"); d.className = "words-group";
+    d.innerHTML = '<summary>Types of message guests can choose</summary><p class="hint">Switch off any you don\'t want. Guests pick one before writing; with only one switched on, they skip that step.</p>';
+    N18.KIND_ORDER.forEach(k => {
+      const wrap = document.createElement("div"); wrap.className = "kind-edit k-" + k;
+      wrap.innerHTML = '<label class="kind-on"><input type="checkbox"> <span></span></label><label>Button label</label><input class="field" maxlength="' + SHORT + '"><label>Hint shown in the writing box</label><input class="field" maxlength="' + SHORT + '">';
+      const [on, lab, ph] = wrap.querySelectorAll("input");
+      on.dataset.off = k; wrap.querySelector(".kind-on span").textContent = KIND_NAMES[k] + " page";
+      lab.dataset.key = k + "_label"; lab.placeholder = N18.TEXT_DEFAULTS[k + "_label"];
+      ph.dataset.key = k + "_ph"; ph.placeholder = N18.TEXT_DEFAULTS[k + "_ph"];
+      d.append(wrap);
+    });
+    box.append(d);
+  })();
+  function showWords(s){
+    const t = s.text || {};
+    document.querySelectorAll("#words [data-key]").forEach(f => { f.value = typeof t[f.dataset.key] === "string" ? t[f.dataset.key] : ""; });
+    document.querySelectorAll("#words [data-off]").forEach(c => { c.checked = t[c.dataset.off + "_off"] !== "1"; });
+  }
+  function collectWords(){
+    const text = {};
+    document.querySelectorAll("#words [data-key]").forEach(f => {
+      const v = f.value.trim();
+      if(v && v !== N18.TEXT_DEFAULTS[f.dataset.key]) text[f.dataset.key] = v;
+    });
+    document.querySelectorAll("#words [data-off]").forEach(c => { if(!c.checked) text[c.dataset.off + "_off"] = "1"; });
+    return text;
+  }
+  async function saveWords(text, msg){
+    $("words-status").textContent = "Saving…";
+    const r = await api("/api/settings", { method:"PUT", body:JSON.stringify({ text }) }).catch(()=>null);
+    if(r && r.ok){ const s = await r.json(); showWords(s); N18.apply(s); load(); $("words-status").textContent = msg; }
+    else { const j = r ? await r.json().catch(()=>({})) : {}; $("words-status").textContent = j.error || "That didn't save. Try again."; }
+  }
+  $("words-save").addEventListener("click", () => {
+    const text = collectWords();
+    if(N18.KIND_ORDER.every(k => text[k + "_off"] === "1")){ $("words-status").textContent = "Keep at least one type of message switched on."; return; }
+    saveWords(text, "Saved. The TV and phones update within a few seconds.");
+  });
+  $("words-reset").addEventListener("click", () => saveWords({}, "Original wording is back."));
+})();
+</script>
+</body>
+</html>

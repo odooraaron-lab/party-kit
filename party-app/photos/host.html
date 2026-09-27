@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Host tools</title>
+<link rel="stylesheet" href="/photo-app/photo.css">
+<script src="/photo-app/photo.js"></script>
+</head>
+<body>
+<main class="wrap stack">
+  <h1 style="font-size:40px">Host tools</h1>
+
+  <section class="card" id="gate">
+    <p style="margin-top:0">Open the host link from your email, or paste the host key from it here.</p>
+    <label for="key">Host key</label>
+    <input id="key" class="field" autocomplete="off" autocapitalize="off" spellcheck="false">
+    <button class="btn" id="unlock" style="margin-top:14px">Unlock</button>
+    <p class="status" id="gate-status" role="status"></p>
+  </section>
+
+  <div id="tools" class="stack hidden">
+    <section class="card links">
+      <h2>Your links</h2>
+      <a href="/tv" target="_blank">Open the slideshow on the TV</a>
+      <a href="/card" target="_blank">Print the QR cards</a>
+      <a href="/" target="_blank">The page guests see</a>
+      <p class="hint" id="theme-line" style="margin-bottom:0"></p>
+    </section>
+
+    <section class="card">
+      <h2>Guests</h2>
+      <div class="switch-row"><label for="sw-uploads" style="margin:0">Guests can add photos</label><input type="checkbox" id="sw-uploads"></div>
+      <div class="switch-row"><label for="sw-gallery" style="margin:0">Guests can see everyone's photos</label><input type="checkbox" id="sw-gallery"></div>
+      <p class="hint">The TV slideshow always shows every photo you haven't removed.</p>
+      <p class="status" id="sw-status" role="status"></p>
+    </section>
+
+    <section class="card">
+      <h2>Words on the screens</h2>
+      <p class="hint">Type <b>{name}</b> for your event name. Leave a box empty to use the original wording.</p>
+      <div id="words"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px">
+        <button class="btn" id="words-save">Save wording</button>
+        <button class="btn btn-ghost" id="words-reset">Put back the original wording</button>
+      </div>
+      <p class="status" id="words-status" role="status"></p>
+    </section>
+
+    <section class="card">
+      <div class="section-head" style="margin-top:0"><h2>Photos</h2><span class="hint" id="count"></span></div>
+      <p class="hint">Remove anything that shouldn't be on the TV. It disappears from the slideshow within a few seconds.</p>
+      <a class="btn" id="download" href="#" download>Download every photo (zip)</a>
+      <div class="host-photos" id="photos"></div>
+    </section>
+  </div>
+</main>
+<script>
+(function(){
+  const $ = PW.$.bind(PW);
+  let key = "";
+  try{ key = localStorage.getItem("pw-host") || ""; }catch(e){}
+  const urlKey = new URLSearchParams(location.search).get("key");
+  if(urlKey){ key = urlKey; try{ localStorage.setItem("pw-host", key); }catch(e){} history.replaceState(null, "", location.pathname); }
+
+  const api = (path, opts = {}) => fetch(path, { ...opts, headers: { "Content-Type": "application/json", "x-host-key": key, ...(opts.headers || {}) } });
+
+  async function unlock(k){
+    const r = await api("/api/host-check", { headers: { "x-host-key": k } }).catch(() => null);
+    if(r && r.ok){
+      key = k; try{ localStorage.setItem("pw-host", k); }catch(e){}
+      $("gate").classList.add("hidden"); $("tools").classList.remove("hidden");
+      $("download").href = "/api/download?key=" + encodeURIComponent(k);
+      load(true);
+    } else if(k) $("gate-status").textContent = "That host key isn't right.";
+  }
+  $("unlock").addEventListener("click", () => unlock($("key").value.trim()));
+  $("key").addEventListener("keydown", e => { if(e.key === "Enter") unlock($("key").value.trim()); });
+
+  const T = window.PW_THEME || {};
+  $("theme-line").textContent = T.name ? "Your theme: " + T.name + "." : "";
+
+  // ---- wording ----
+  const FIELDS = [
+    ["title","Event heading (TV and guests' phones)",0],["intro","Welcome message on guests' phones",1],
+    ["addButton","Add button",0],["thanks","Message after uploading",1],["qrLabel","Words under the QR code on the TV",0],
+    ["emptyTv","TV message before the first photo",0],["cardTitle","QR card heading",0],["cardText","QR card message",1]
+  ];
+  FIELDS.forEach(([k, label, long]) => {
+    const l = document.createElement("label"); l.htmlFor = "w-" + k; l.textContent = label;
+    const f = document.createElement(long ? "textarea" : "input");
+    f.className = "field"; f.id = "w-" + k; f.dataset.key = k; f.placeholder = PW.TEXT_DEFAULTS[k]; if(long) f.rows = 3;
+    $("words").append(l, f);
+  });
+  function showWords(s){ document.querySelectorAll("#words [data-key]").forEach(f => { f.value = (s.text || {})[f.dataset.key] || ""; }); }
+  async function saveSettings(body, statusEl, msg){
+    statusEl.textContent = "Saving…";
+    const r = await api("/api/settings", { method: "PUT", body: JSON.stringify(body) }).catch(() => null);
+    if(r && r.ok){ const s = await r.json(); PW.apply(s); showWords(s); showSwitches(s); statusEl.textContent = msg; }
+    else statusEl.textContent = "That didn't save. Try again.";
+  }
+  $("words-save").addEventListener("click", () => {
+    const text = {};
+    document.querySelectorAll("#words [data-key]").forEach(f => { const v = f.value.trim(); if(v && v !== PW.TEXT_DEFAULTS[f.dataset.key]) text[f.dataset.key] = v; });
+    saveSettings({ text }, $("words-status"), "Saved. The TV and phones update within a few seconds.");
+  });
+  $("words-reset").addEventListener("click", () => saveSettings({ text: {} }, $("words-status"), "Original wording is back."));
+
+  // ---- switches ----
+  function showSwitches(s){ $("sw-uploads").checked = s.uploads !== "closed"; $("sw-gallery").checked = s.gallery !== "off"; }
+  $("sw-uploads").addEventListener("change", e => saveSettings({ uploads: e.target.checked ? "open" : "closed" }, $("sw-status"), e.target.checked ? "Guests can add photos." : "Uploads are closed."));
+  $("sw-gallery").addEventListener("change", e => saveSettings({ gallery: e.target.checked ? "on" : "off" }, $("sw-status"), e.target.checked ? "Guests can see the album." : "The album is hidden from guests."));
+
+  // ---- photos ----
+  async function load(first){
+    const j = await fetch("/api/state", { cache: "no-store" }).then(r => r.json()).catch(() => null);
+    if(!j) return;
+    PW.apply(j.settings);
+    if(first){ showWords(j.settings); showSwitches(j.settings); }
+    const list = (j.photos || []).slice().reverse();
+    $("count").textContent = PW.plural(list.length, "photo", "photos");
+    $("photos").replaceChildren(...list.map(p => {
+      const fig = document.createElement("figure");
+      const img = document.createElement("img"); img.src = p.thumbUrl; img.alt = ""; img.loading = "lazy";
+      const cap = document.createElement("figcaption"); cap.textContent = p.from || "A guest";
+      const del = document.createElement("button"); del.textContent = "Remove";
+      del.addEventListener("click", async () => {
+        if(!confirm("Remove this photo? It can't be undone.")) return;
+        del.disabled = true;
+        const r = await api("/api/photos/" + p.id, { method: "DELETE" }).catch(() => null);
+        if(r && r.ok) fig.remove(); else { del.disabled = false; alert("That didn't work. Try again."); }
+        $("count").textContent = PW.plural($("photos").children.length, "photo", "photos");
+      });
+      fig.append(img, cap, del);
+      return fig;
+    }));
+  }
+  setInterval(() => { if(!document.hidden && !$("tools").classList.contains("hidden")) load(false); }, 20000);
+
+  if(key) unlock(key);
+})();
+</script>
+</body>
+</html>

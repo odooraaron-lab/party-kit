@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Photo wall</title>
+<link rel="stylesheet" href="/photo-app/photo.css">
+<script src="/photo-app/photo.js"></script>
+</head>
+<body>
+<div class="tv" id="tv">
+  <div class="layer" id="a"><div class="backdrop"></div><div class="photo"></div><div class="credit"></div></div>
+  <div class="layer" id="b"><div class="backdrop"></div><div class="photo"></div><div class="credit"></div></div>
+  <div class="tv-empty hidden" id="empty"><h2 id="empty-title"></h2><p id="empty-text"></p></div>
+  <div class="tv-new" id="new">New photo</div>
+  <aside class="tv-side">
+    <h1 id="title"></h1>
+    <div>
+      <div class="tv-qr"><img src="/api/qr.svg" alt="QR code to add photos"></div>
+      <div class="label" id="qr-label"></div>
+      <div class="url" id="url"></div>
+    </div>
+    <div class="count" id="count"></div>
+  </aside>
+  <button class="tv-fs" id="fs">Full screen</button>
+</div>
+<script>
+(function(){
+  const $ = PW.$.bind(PW);
+  const SLIDE_MS = 7000;
+  let photos = [], seen = null, priority = [], order = [], pos = 0, current = null, front = "a";
+
+  fetch("/api/guest-url").then(r => r.json()).then(j => { $("url").textContent = (j.url || "").replace(/^https?:\/\//, "").replace(/\/$/, ""); }).catch(()=>{});
+
+  function words(s){
+    PW.apply(s);
+    $("title").textContent = PW.t("title"); document.title = PW.t("title");
+    $("qr-label").textContent = PW.t("qrLabel");
+    $("empty-title").textContent = PW.t("emptyTv");
+    $("empty-text").textContent = PW.t("qrLabel");
+  }
+
+  async function poll(){
+    try{
+      const j = await fetch("/api/state", { cache: "no-store" }).then(r => r.json());
+      words(j.settings || {});
+      photos = j.photos || [];
+      const ids = new Set(photos.map(p => p.id));
+      if(seen === null) seen = new Set(ids);          // first load: nothing counts as "new"
+      else photos.forEach(p => { if(!seen.has(p.id)){ seen.add(p.id); priority.push(p.id); } });
+      priority = priority.filter(id => ids.has(id));   // the host may have removed some
+      $("count").textContent = PW.plural(photos.length, "photo", "photos");
+      $("empty").classList.toggle("hidden", photos.length > 0);
+      if(current && !ids.has(current)) next();         // removed while on screen
+      if(!current && photos.length) next();
+    }catch(e){}
+  }
+
+  function pick(){
+    if(priority.length) return { id: priority.shift(), fresh: true };
+    if(pos >= order.length){ order = photos.map(p => p.id).sort(() => Math.random() - .5); pos = 0; }
+    return { id: order[pos++], fresh: false };
+  }
+
+  function preload(url){ return new Promise(ok => { const i = new Image(); i.onload = i.onerror = () => ok(); i.src = url; }); }
+
+  let timer = null;
+  async function next(){
+    clearTimeout(timer);
+    if(!photos.length){ current = null; ["a","b"].forEach(k => $(k).classList.remove("show")); return; }
+    let choice = pick(), p = photos.find(x => x.id === choice.id);
+    if(!p){ timer = setTimeout(next, 50); return; }
+    await preload(p.url);
+    const back = front === "a" ? "b" : "a";
+    const el = $(back);
+    el.querySelector(".backdrop").style.backgroundImage = "url(\"" + p.thumbUrl + "\")";
+    el.querySelector(".photo").style.backgroundImage = "url(\"" + p.url + "\")";
+    el.querySelector(".credit").textContent = p.from ? "Photo by " + p.from : "";
+    el.classList.remove("show"); void el.offsetWidth; el.classList.add("show");
+    $(front).classList.remove("show");
+    front = back; current = p.id;
+    $("new").classList.toggle("show", choice.fresh);
+    timer = setTimeout(next, SLIDE_MS);
+  }
+
+  async function toggleFull(){
+    try{ if(document.fullscreenElement) await document.exitFullscreen(); else await document.documentElement.requestFullscreen(); }
+    catch(e){ $("fs").textContent = "Press F11 for full screen"; }
+  }
+  $("fs").addEventListener("click", toggleFull);
+  addEventListener("keydown", e => {
+    if(e.key === "f" || e.key === "F") toggleFull();
+    if(e.key === "ArrowRight") next();
+  });
+
+  poll();
+  setInterval(() => { if(!document.hidden) poll(); }, 4000);
+})();
+</script>
+</body>
+</html>

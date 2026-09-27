@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Add a page to the storybook</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📖</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alegreya:wght@400;500;700&family=Grandstander:wght@600;700;800&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div class="scene-top" id="scene">
+  <div class="stars" id="stars"></div>
+  <div class="cloud c1"></div><div class="cloud c2"></div>
+</div>
+<main class="page">
+  <section class="book" id="write-view">
+    <h1 id="title">Add a page to the storybook</h1>
+    <p class="lede" id="lede"></p>
+
+    <h2 class="step" id="prompt-label">Pick what your page is about</h2>
+    <div class="prompts" role="group" aria-labelledby="prompt-label" id="prompts"></div>
+
+    <h2 class="step"><label for="msg">Write your page</label></h2>
+    <textarea class="lined" id="msg" maxlength="400"></textarea>
+    <div class="counter"><span id="msg-count">0</span> of 400 letters</div>
+
+    <h2 class="step"><label for="from">Sign it</label></h2>
+    <input class="field" type="text" id="from" maxlength="60" placeholder="Your name, and how you know them" autocomplete="name">
+
+    <div style="margin-top:1.6rem"><button class="btn btn-main" id="seal" disabled>Add my page</button></div>
+    <div class="status" id="status" role="status"></div>
+  </section>
+
+  <section class="book done hidden" id="done-view" role="status">
+    <div class="flyaway" id="flyaway"></div>
+    <h2 id="thanks-title"></h2>
+    <p id="thanks-text"></p>
+    <button class="btn btn-soft" id="again">Write another page</button>
+  </section>
+</main>
+<script src="/shared.js"></script>
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  let kind = "wish", sealing = false;
+
+  // scenery: Hey Diddle Diddle above, Humpty Dumpty on the wall
+  const scene = $("scene");
+  scene.insertAdjacentHTML("beforeend", N18.hills("xMidYMax slice") +
+    '<div class="moon" aria-hidden="true"></div>' +
+    '<div class="cow" id="cow">' + N18.COW + '</div>' +
+    '<div class="wall brick" aria-hidden="true"></div>' +
+    '<div class="dog" id="dog">' + N18.DOG + '</div>' +
+    '<div class="humpty" id="humpty">' + N18.HUMPTY + '</div>' +
+    '<div class="haha" id="haha"></div>');
+  $("haha").textContent = N18.SAY.laugh;
+  const cow = $("cow");
+  cow.style.setProperty("--x0","-78px"); cow.style.setProperty("--x1","70px"); cow.style.setProperty("--y0","26px"); cow.style.setProperty("--ytop","-38px");
+  function diddle(){
+    cow.classList.remove("jump"); void cow.offsetWidth; cow.classList.add("jump");
+    setTimeout(()=>{ $("dog").classList.add("laugh"); $("haha").classList.add("show"); }, 1100);
+    setTimeout(()=>{ $("dog").classList.remove("laugh"); $("haha").classList.remove("show"); }, 3400);
+  }
+  function whoa(){ const h = $("humpty"); h.classList.remove("whoa"); void h.offsetWidth; h.classList.add("whoa"); setTimeout(()=>h.classList.remove("whoa"), 1700); }
+  if(!matchMedia("(prefers-reduced-motion: reduce)").matches){
+    setTimeout(diddle, 1600); setInterval(diddle, 11000);
+    setTimeout(whoa, 6500); setInterval(whoa, 15000);
+  }
+  for(let i=0;i<14;i++){ const s=document.createElement("span"); s.className="star"; s.style.left=Math.random()*100+"%"; s.style.top=Math.random()*55+"%"; s.style.animationDelay=(Math.random()*3)+"s"; $("stars").append(s); }
+
+  // prompts and wording (the host can change the wording on /host)
+  function buildPrompts(){
+    const kinds = Object.keys(N18.KINDS);
+    if(!kinds.includes(kind)) kind = kinds[0];
+    $("prompts").replaceChildren();
+    kinds.forEach(k => {
+      const v = N18.KINDS[k];
+      const b = document.createElement("button");
+      b.className = "prompt k-" + k; b.dataset.kind = k; b.setAttribute("aria-pressed", String(k === kind));
+      b.innerHTML = N18.ICONS[k];
+      const t = document.createElement("span"); t.textContent = v.label; b.append(t);
+      b.addEventListener("click", () => {
+        kind = k;
+        document.querySelectorAll(".prompt").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+        $("msg").placeholder = v.ph; $("msg").focus({ preventScroll:true });
+      });
+      $("prompts").append(b);
+    });
+    $("msg").placeholder = N18.KINDS[kind].ph;
+    // one kind only: no need to ask
+    $("prompt-label").classList.toggle("hidden", kinds.length < 2); $("prompts").classList.toggle("hidden", kinds.length < 2);
+  }
+  function words(){
+    $("title").textContent = N18.t("guestTitle"); document.title = N18.t("guestTitle");
+    $("lede").textContent = N18.t("guestIntro");
+    $("seal").textContent = N18.t("sendButton");
+    $("thanks-title").textContent = N18.t("thanksTitle");
+    $("thanks-text").textContent = N18.t("thanksText");
+  }
+  buildPrompts(); words();
+  fetch("/api/settings").then(r=>r.json()).then(s=>{ N18.apply(s); buildPrompts(); words(); }).catch(()=>{});
+
+  try{ $("from").value = localStorage.getItem("n18-from") || ""; }catch(e){}
+  function sync(){ $("msg-count").textContent = $("msg").value.length; $("seal").disabled = $("msg").value.trim().length < 2; }
+  $("msg").addEventListener("input", sync);
+
+  $("seal").addEventListener("click", async ()=>{
+    if(sealing) return;
+    sealing = true; $("seal").disabled = true; $("seal").textContent = "Adding your page…"; $("status").textContent = "";
+    const body = { text:$("msg").value.trim(), from:$("from").value.trim(), kind };
+    try{
+      const r = await fetch("/api/notes", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body) });
+      const j = await r.json().catch(()=>({}));
+      if(!r.ok) throw new Error(j.error || "Your page didn't save. Tap " + N18.t("sendButton") + " to try again.");
+      try{ localStorage.setItem("n18-from", body.from); }catch(e){}
+      $("write-view").classList.add("hidden");
+      $("flyaway").innerHTML = N18.BIRD;
+      $("done-view").classList.remove("hidden");
+      window.scrollTo({ top:0, behavior:"smooth" });
+    }catch(e){
+      $("status").textContent = e.message && e.message !== "Failed to fetch" ? e.message : "No connection right now. Check your wifi or data, then tap " + N18.t("sendButton") + " again.";
+      $("seal").disabled = false;
+    }finally{ sealing = false; $("seal").textContent = N18.t("sendButton"); }
+  });
+
+  $("again").addEventListener("click", ()=>{
+    $("msg").value = ""; sync();
+    $("done-view").classList.add("hidden"); $("write-view").classList.remove("hidden");
+    $("msg").focus({ preventScroll:true });
+  });
+})();
+</script>
+</body>
+</html>

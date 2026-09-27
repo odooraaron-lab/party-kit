@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Add your photos</title>
+<link rel="stylesheet" href="/photo-app/photo.css">
+<script src="/photo-app/photo.js"></script>
+</head>
+<body>
+<main class="wrap">
+  <section class="hero">
+    <h1 id="title"></h1>
+    <p id="intro"></p>
+  </section>
+
+  <section id="uploader">
+    <div class="add-row">
+      <label class="btn" for="pick" style="margin:0"><span id="add-label"></span></label>
+      <label class="btn btn-ghost" for="camera" style="margin:0" aria-label="Take a photo">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
+      </label>
+    </div>
+    <input id="pick" type="file" accept="image/*" multiple class="hidden">
+    <input id="camera" type="file" accept="image/*" capture="environment" class="hidden">
+    <label for="from">Your name <span class="hint">(optional, shows with your photos)</span></label>
+    <input id="from" class="field" maxlength="50" autocomplete="name">
+    <ul class="queue" id="queue" aria-live="polite"></ul>
+    <p class="status" id="status" role="status"></p>
+  </section>
+  <p id="closed" class="card hidden">The host has closed uploads for this album. Thanks for coming!</p>
+
+  <section id="gallery-wrap" class="hidden">
+    <div class="section-head"><h2>Everyone's photos</h2><span class="hint" id="count"></span></div>
+    <div class="gallery" id="gallery"></div>
+  </section>
+</main>
+
+<div class="lightbox hidden" id="lightbox" role="dialog" aria-modal="true" aria-label="Photo">
+  <img id="lb-img" alt="">
+  <p id="lb-from"></p>
+  <button class="btn btn-sm" id="lb-close">Close</button>
+</div>
+
+<script>
+(function(){
+  const $ = PW.$.bind(PW);
+  let settings = {}, photos = [], active = 0;
+
+  function words(){
+    $("title").textContent = PW.t("title"); document.title = PW.t("title");
+    $("intro").textContent = PW.t("intro");
+    $("add-label").textContent = PW.t("addButton");
+    const closed = settings.uploads === "closed";
+    $("uploader").classList.toggle("hidden", closed);
+    $("closed").classList.toggle("hidden", !closed);
+    $("gallery-wrap").classList.toggle("hidden", settings.gallery === "off");
+  }
+
+  // ---- gallery ----
+  function render(){
+    if(settings.gallery === "off") return;
+    $("count").textContent = PW.plural(photos.length, "photo", "photos");
+    const g = $("gallery");
+    const have = new Set([...g.children].map(b => b.dataset.id));
+    const want = photos.slice().reverse();
+    if(want.length === have.size && want.every(p => have.has(p.id))) return;
+    g.replaceChildren(...want.map(p => {
+      const b = document.createElement("button");
+      b.dataset.id = p.id; b.setAttribute("aria-label", "Photo" + (p.from ? " from " + p.from : ""));
+      const img = document.createElement("img"); img.src = p.thumbUrl; img.alt = ""; img.loading = "lazy";
+      b.append(img); b.addEventListener("click", () => open(p));
+      return b;
+    }));
+  }
+  function open(p){
+    $("lb-img").src = p.url; $("lb-from").textContent = p.from ? "From " + p.from : "";
+    $("lightbox").classList.remove("hidden"); $("lb-close").focus();
+  }
+  function close(){ $("lightbox").classList.add("hidden"); $("lb-img").src = ""; }
+  $("lb-close").addEventListener("click", close);
+  $("lightbox").addEventListener("click", e => { if(e.target === $("lightbox")) close(); });
+  addEventListener("keydown", e => { if(e.key === "Escape") close(); });
+
+  async function refresh(){
+    try{
+      const j = await fetch("/api/state", { cache: "no-store" }).then(r => r.json());
+      settings = j.settings || {}; photos = j.photos || []; PW.apply(settings); words(); render();
+    }catch(e){}
+  }
+
+  // ---- uploads: shrink on the phone, send one at a time ----
+  try{ $("from").value = localStorage.getItem("pw-from") || ""; }catch(e){}
+  $("from").addEventListener("change", () => { try{ localStorage.setItem("pw-from", $("from").value.trim()); }catch(e){} });
+
+  const jobs = [];
+  function addFiles(list){
+    [...list].forEach(file => {
+      const li = document.createElement("li");
+      const tag = document.createElement("span"); tag.className = "tag"; tag.textContent = "Waiting";
+      li.append(tag); $("queue").prepend(li);
+      jobs.push({ file, li, tag });
+    });
+    pump();
+  }
+  async function pump(){
+    if(active) return;
+    const job = jobs.shift();
+    if(!job){ return; }
+    active = 1;
+    await send(job);
+    active = 0;
+    const left = jobs.length + [...$("queue").children].filter(li => li.classList.contains("failed")).length;
+    if(!jobs.length) $("status").textContent = left ? "" : PW.t("thanks");
+    pump();
+  }
+  async function send(job){
+    const { file, li, tag } = job;
+    li.className = ""; tag.textContent = "Preparing";
+    let parts;
+    try{ parts = await PW.shrink(file); }
+    catch(e){
+      // Couldn't read it on this phone. Send the original if it's a normal, small image.
+      if(/^image\/(jpeg|png|webp)$/.test(file.type) && file.size < 3800000) parts = { full: file, thumb: null };
+      else { fail(job, "Can't read"); return; }
+    }
+    if(!li.querySelector("img")){ const img = document.createElement("img"); img.alt = ""; img.src = URL.createObjectURL(parts.thumb || parts.full); li.prepend(img); }
+    tag.textContent = "Sending";
+    const fd = new FormData();
+    fd.append("full", parts.full, "photo.jpg");
+    if(parts.thumb) fd.append("thumb", parts.thumb, "thumb.jpg");
+    fd.append("from", $("from").value.trim());
+    try{
+      const r = await fetch("/api/photos", { method: "POST", body: fd });
+      const j = await r.json().catch(() => ({}));
+      if(!r.ok) throw new Error(j.error || "Didn't send");
+      li.classList.add("done"); tag.textContent = "Added";
+      photos.push(j); render();
+    }catch(e){ fail(job, "Tap to retry", e.message); }
+  }
+  function fail(job, label, msg){
+    job.li.classList.add("failed"); job.tag.textContent = label;
+    if(msg) $("status").textContent = msg;
+    if(label === "Tap to retry"){
+      job.li.style.cursor = "pointer";
+      job.li.onclick = () => { job.li.onclick = null; job.li.style.cursor = ""; jobs.push(job); pump(); };
+    }
+  }
+  $("pick").addEventListener("change", e => { addFiles(e.target.files); e.target.value = ""; });
+  $("camera").addEventListener("change", e => { addFiles(e.target.files); e.target.value = ""; });
+
+  refresh();
+  setInterval(() => { if(!document.hidden) refresh(); }, 15000);
+})();
+</script>
+</body>
+</html>

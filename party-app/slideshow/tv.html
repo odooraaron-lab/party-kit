@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en-NZ">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Slideshow</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap">
+<style>
+  html,body{margin:0;height:100%;background:#000;color:#fff;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;overflow:hidden}
+  .stage{position:fixed;inset:0;cursor:none}
+  .layer{position:absolute;inset:0;opacity:0;transition:opacity 1.2s ease}
+  .layer.show{opacity:1}
+  .backdrop{position:absolute;inset:-40px;background-size:cover;background-position:center;filter:blur(40px) brightness(.5);transform:scale(1.1)}
+  .media{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:transparent}
+  .layer.show img.media{animation:drift 9s ease-out both}
+  @keyframes drift{from{transform:scale(1)}to{transform:scale(1.035)}}
+  .title-card{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:6vw;background:radial-gradient(circle at 50% 40%,#2B2340,#0B0913 70%)}
+  .title-card h1{font-family:"DM Serif Display",Georgia,serif;font-weight:400;font-size:7vw;line-height:1.05;margin:0;overflow-wrap:anywhere;letter-spacing:.01em}
+  .title-card p{font-size:1.6vw;opacity:.7;margin:3vh 0 0}
+  .sound{position:fixed;left:50%;bottom:4vh;transform:translateX(-50%);z-index:5;background:rgba(255,255,255,.92);color:#111;border:0;border-radius:999px;font:600 18px/1 system-ui,sans-serif;padding:14px 22px;cursor:pointer}
+  .fs{position:fixed;left:12px;bottom:10px;z-index:5;background:rgba(0,0,0,.5);color:#fff;border:0;border-radius:8px;padding:6px 10px;font-size:13px;opacity:.3;cursor:pointer}
+  .fs:hover,.fs:focus{opacity:1}
+  @media (prefers-reduced-motion:reduce){.layer{transition:none}.layer.show img.media{animation:none}}
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+  <div class="title-card" id="title-card"><div><h1 id="title"></h1><p id="sub"></p></div></div>
+  <div class="layer" id="a"></div>
+  <div class="layer" id="b"></div>
+</div>
+<button class="sound" id="sound">Click for sound</button>
+<button class="fs" id="fs">Full screen</button>
+<script>
+(function(){
+  var TITLE_MS = 6000, VIDEO_START_LIMIT = 8000;
+  var items = [], queue = [], front = "a", sound = false, timer = null, imageMs = 7000, playing = null;
+  var $ = function(id){ return document.getElementById(id); };
+
+  function load(){
+    return fetch("/api/state", { cache: "no-store" }).then(function(r){ return r.json(); }).then(function(j){
+      $("title").textContent = j.title || ""; document.title = j.title || "Slideshow";
+      imageMs = (j.imageSeconds || 7) * 1000;
+      items = j.items || [];
+      $("sub").textContent = items.length ? "" : "Photos and videos will appear here once they're uploaded.";
+    }).catch(function(){});
+  }
+
+  function showTitle(){
+    clearTimeout(timer);
+    stopVideo();
+    $("a").classList.remove("show"); $("b").classList.remove("show");
+    $("title-card").style.opacity = "1";
+    timer = setTimeout(function(){ load().then(next); }, TITLE_MS);
+  }
+
+  function stopVideo(){ if(playing){ try{ playing.pause(); }catch(e){} playing = null; } }
+
+  function next(){
+    clearTimeout(timer);
+    if(!items.length){ return showTitle(); }
+    if(!queue.length){
+      // End of a round: back to the title card, then start again from the first item.
+      if(queue.done){ queue = []; return showTitle(); }
+      queue = items.slice(); queue.done = false;
+    }
+    var item = queue.shift();
+    if(!queue.length) queue.done = true;
+    $("title-card").style.opacity = "0";
+    var back = front === "a" ? "b" : "a";
+    var el = $(back);
+    el.innerHTML = "";
+    if(item.kind === "video") showVideo(el, item); else showImage(el, item);
+  }
+
+  function reveal(el){
+    var old = $(front); front = el.id;
+    el.classList.add("show"); old.classList.remove("show");
+    setTimeout(function(){ if(!old.classList.contains("show")){ var v = old.querySelector("video"); if(v){ v.pause(); } old.innerHTML = ""; } }, 1400);
+  }
+
+  function showImage(el, item){
+    var img = new Image();
+    img.onload = function(){
+      var bd = document.createElement("div"); bd.className = "backdrop"; bd.style.backgroundImage = "url(\"" + item.url + "\")";
+      img.className = "media"; img.alt = "";
+      el.appendChild(bd); el.appendChild(img);
+      stopVideo(); reveal(el);
+      timer = setTimeout(next, imageMs);
+    };
+    img.onerror = function(){ next(); };   // a broken photo never stops the show
+    img.src = item.url;
+  }
+
+  function showVideo(el, item){
+    var v = document.createElement("video");
+    v.className = "media"; v.src = item.url; v.playsInline = true; v.muted = !sound; v.preload = "auto";
+    v.setAttribute("playsinline", "");
+    var started = false;
+    var giveUp = setTimeout(function(){ if(!started){ v.src = ""; next(); } }, VIDEO_START_LIMIT); // can't play here: skip
+    v.addEventListener("playing", function(){
+      if(started) return; started = true; clearTimeout(giveUp);
+      stopVideo(); playing = v; reveal(el);
+      var limit = isFinite(v.duration) ? (v.duration + 1) * 1000 : 190000;
+      timer = setTimeout(next, Math.min(limit, 190000));
+    });
+    v.addEventListener("ended", function(){ if(started){ clearTimeout(timer); next(); } });
+    v.addEventListener("error", function(){ clearTimeout(giveUp); if(!started) next(); else { clearTimeout(timer); next(); } });
+    el.appendChild(v);
+    var p = v.play(); if(p && p.catch) p.catch(function(){ if(!v.muted){ v.muted = true; v.play().catch(function(){}); } });
+  }
+
+  // Browsers only allow sound after one click or key press on the TV.
+  function enableSound(){
+    sound = true; $("sound").style.display = "none";
+    if(playing){ playing.muted = false; }
+  }
+  $("sound").addEventListener("click", enableSound);
+  function toggleFull(){
+    var d = document.documentElement;
+    if(document.fullscreenElement){ document.exitFullscreen(); }
+    else if(d.requestFullscreen){ d.requestFullscreen().catch(function(){ $("fs").textContent = "Press F11 for full screen"; }); }
+  }
+  $("fs").addEventListener("click", toggleFull);
+  addEventListener("keydown", function(e){
+    if(!sound) enableSound();
+    if(e.key === "f" || e.key === "F") toggleFull();
+    if(e.key === "ArrowRight") next();
+  });
+
+  load().then(showTitle);
+})();
+</script>
+</body>
+</html>
