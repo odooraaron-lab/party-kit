@@ -32,6 +32,7 @@ export type Party = {
   settings: Partial<Settings>; // host-edited values (name, birthday, sound…)
   createdAt: string;
   expiresAt: string;
+  disabled?: boolean; // turned off from the admin: guests and TV see a "paused" page
 };
 
 export type Note = { id: string; text: string; from: string; kind: string; createdAt: number };
@@ -51,6 +52,8 @@ interface Store {
   bySession(sessionId: string): Promise<Party | null>;
   insert(p: Party): Promise<void>; // throws SlugTaken / SessionExists
   updateSettings(slug: string, patch: Partial<Settings>): Promise<void>;
+  setDisabled(slug: string, disabled: boolean): Promise<void>;
+  setExpiry(slug: string, expiresAt: string): Promise<void>;
   listNotes(slug: string): Promise<Note[]>;
   countNotes(slug: string): Promise<number>;
   addNote(slug: string, n: Note): Promise<void>;
@@ -97,6 +100,7 @@ function postgresStore(url: string): Store {
       await sql`CREATE INDEX IF NOT EXISTS notes_party_idx ON notes (party_slug, created_at)`;
       await sql`ALTER TABLE parties ADD COLUMN IF NOT EXISTS product text NOT NULL DEFAULT 'story'`;
       await sql`ALTER TABLE parties ADD COLUMN IF NOT EXISTS cleaned boolean NOT NULL DEFAULT false`;
+      await sql`ALTER TABLE parties ADD COLUMN IF NOT EXISTS disabled boolean NOT NULL DEFAULT false`;
       await sql`CREATE TABLE IF NOT EXISTS photos (
         id text PRIMARY KEY,
         party_slug text NOT NULL REFERENCES parties(slug) ON DELETE CASCADE,
@@ -125,6 +129,7 @@ function postgresStore(url: string): Store {
           email: r.email as string, sessionId: r.session_id as string, hostKey: r.host_key as string,
           settings: (r.settings as Partial<Settings>) ?? {},
           createdAt: new Date(r.created_at as string).toISOString(), expiresAt: new Date(r.expires_at as string).toISOString(),
+          disabled: Boolean(r.disabled),
         }
       : null;
   return {
@@ -146,6 +151,14 @@ function postgresStore(url: string): Store {
     async updateSettings(slug, patch) {
       await init();
       await sql`UPDATE parties SET settings = settings || ${JSON.stringify(patch)}::jsonb WHERE slug = ${slug}`;
+    },
+    async setDisabled(slug, disabled) {
+      await init();
+      await sql`UPDATE parties SET disabled = ${disabled} WHERE slug = ${slug}`;
+    },
+    async setExpiry(slug, expiresAt) {
+      await init();
+      await sql`UPDATE parties SET expires_at = ${expiresAt} WHERE slug = ${slug}`;
     },
     async listNotes(slug) {
       await init();
@@ -248,6 +261,16 @@ function fileStore(): Store {
       const d = await load();
       const p = d.parties.find((x) => x.slug === slug);
       if (p) { p.settings = { ...p.settings, ...patch }; await save(d); }
+    },
+    async setDisabled(slug, disabled) {
+      const d = await load();
+      const p = d.parties.find((x) => x.slug === slug);
+      if (p) { p.disabled = disabled; await save(d); }
+    },
+    async setExpiry(slug, expiresAt) {
+      const d = await load();
+      const p = d.parties.find((x) => x.slug === slug);
+      if (p) { p.expiresAt = expiresAt; await save(d); }
     },
     async listNotes(slug) {
       return (await load()).notes.filter((n) => n.slug === slug).sort((a, b) => a.createdAt - b.createdAt)

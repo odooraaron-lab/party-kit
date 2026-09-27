@@ -25,7 +25,7 @@ export async function POST(req: Request) {
           product_data: { name: `${P.name} · ${title}`, description: `Your photos and videos on any TV · online for ${P.monthsLive} months` },
         },
       }],
-      metadata: { kind: 'slideshow', name: title, slug },
+      metadata: { product: 'slideshow', kind: 'slideshow', name: title, slug },
       success_url: `${siteUrl()}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${siteUrl()}/tv-slideshow`,
       allow_promotion_codes: O.promotionCodes || undefined,

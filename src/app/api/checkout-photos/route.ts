@@ -27,7 +27,7 @@ export async function POST(req: Request) {
           product_data: { name: `${PHOTO_PRODUCT.name} · ${name}`, description: `${theme.name} look · online for ${PHOTO_PRODUCT.monthsLive} months` },
         },
       }],
-      metadata: { kind: 'photos', name, slug, theme: theme.id },
+      metadata: { product: 'photos', kind: 'photos', name, slug, theme: theme.id },
       success_url: `${siteUrl()}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${siteUrl()}/photo-wall`,
       allow_promotion_codes: O.promotionCodes || undefined,

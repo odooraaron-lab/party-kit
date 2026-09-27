@@ -96,6 +96,17 @@ plays them on a loop on any TV. No guests, no host tools.
   video-conversion service later would fix this for good.
 - Test locally: `/api/dev/create-party?product=slideshow&name=Happy%2050th&slug=dad50` → open the `upload` link it returns.
 
+## Connected to the admin (HQ)
+
+The three apps report to the Admin Portal (`admin.yourbrand.nz`) as products `story`, `photos` and `slideshow`.
+- `src/lib/hq.ts` — signs reports with each product's own secret, and adds the admin's beacon to every party
+  page (TV pages also send a check-in every 5 minutes).
+- New sites are reported from `provisionParty()`; checkouts carry `metadata.product` so orders land under the right app.
+- `src/app/api/hq/action/route.ts` — the admin's Turn off / Turn on / Add 30 days / Resend email buttons.
+  A turned-off party shows a "paused" page to guests and the TV.
+- Env: `HQ_URL`, `HQ_SECRET_STORY`, `HQ_SECRET_PHOTOS`, `HQ_SECRET_SLIDESHOW` (Admin → Products → each app).
+  Set each product's app URL in the admin to this site's main address. Without `HQ_URL` everything runs as before.
+
 ## Shop layout
 - `src/lib/listings.ts` — the shop grid, in display order: the three instant apps placed among stock
   listings (sold out / coming soon, display-only until physical products are switched on).
