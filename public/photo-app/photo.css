@@ -44,11 +44,13 @@ label{display:block;font-weight:600;margin:16px 0 6px}
 .tv .layer{position:absolute;inset:0;opacity:0;transition:opacity 1.2s ease}
 .tv .layer.show{opacity:1}
 .tv .backdrop{position:absolute;inset:-40px;background-size:cover;background-position:center;filter:blur(36px) brightness(.55);transform:scale(1.1)}
-.tv .photo{position:absolute;inset:4vh 26vw 4vh 4vw;background-size:contain;background-repeat:no-repeat;background-position:center}
+.tv .photo{position:absolute;inset:5vh 26vw 5vh 4vw;display:flex;align-items:center;justify-content:center}
 .tv .layer.show .photo{animation:drift 9s ease-out both}
 @keyframes drift{from{transform:scale(1)}to{transform:scale(1.04)}}
-@media (prefers-reduced-motion:reduce){.tv .layer.show .photo{animation:none}.tv .layer{transition:none}}
-.tv .credit{position:absolute;left:4vw;bottom:3.5vh;color:#fff;font-size:1.6vw;font-weight:600;text-shadow:0 2px 12px rgba(0,0,0,.6)}
+.tv .print{margin:0;display:flex;flex-direction:column;align-items:center}
+.tv .print img{display:block;width:auto;height:auto;max-width:68vw;max-height:82vh;object-fit:contain}
+.tv .credit{margin-top:1.4vh;min-height:1.2em;color:#fff;font-size:1.5vw;font-weight:600;text-shadow:0 2px 12px rgba(0,0,0,.6)}
+@media (prefers-reduced-motion:reduce){.tv .layer.show .photo,.tv .layer.show .print{animation:none !important}.tv .layer{transition:none}}
 .tv-side{position:absolute;top:0;right:0;bottom:0;width:22vw;background:var(--bg);color:var(--ink);display:flex;flex-direction:column;justify-content:space-between;padding:4vh 2vw;z-index:2}
 .tv-side h1{font-size:2.6vw;overflow-wrap:anywhere}
 .tv-qr{background:#fff;border-radius:1.2vw;padding:1vw}
@@ -87,3 +89,103 @@ label{display:block;font-weight:600;margin:16px 0 6px}
 @page{size:A4;margin:0}
 @media print{.print-bar{display:none}.sheet{padding:8mm}}
 .lede,.hero p,h1,h2,p{overflow-wrap:anywhere}
+
+/* ─────────────────────────────────────────────────────────────
+   LOOKS. Each look styles the TV (and lightly the guest page and
+   QR cards) its own way. <html data-look="…"> is set per party.
+   ───────────────────────────────────────────────────────────── */
+
+/* Champagne: art-deco gold on black. Double gold frame, ornaments, slow and elegant. */
+[data-look="champagne"] .tv .layer{transition-duration:2s}
+[data-look="champagne"] .tv .backdrop{filter:blur(44px) brightness(.32) sepia(.5)}
+[data-look="champagne"] .tv .layer.show .photo{animation-duration:14s}
+[data-look="champagne"] .tv .print img{max-width:64vw;max-height:76vh;padding:1.2vh;background:#15120E;border:1px solid #D9B46A;outline:1px solid rgba(217,180,106,.45);outline-offset:.9vh;box-shadow:0 2.5vh 7vh rgba(0,0,0,.75)}
+[data-look="champagne"] .tv .credit{margin-top:2.6vh;font-family:var(--display);font-style:italic;font-weight:600;font-size:1.9vw;letter-spacing:.04em;color:#D9B46A;text-shadow:none}
+[data-look="champagne"] .tv .credit:not(:empty)::before{content:"\2726\00a0\00a0"}
+[data-look="champagne"] .tv .credit:not(:empty)::after{content:"\00a0\00a0\2726"}
+[data-look="champagne"] .tv-side{background:linear-gradient(180deg,#1C1712,#110E0B);border-left:1px solid #D9B46A;text-align:center}
+[data-look="champagne"] .tv-side::before,[data-look="champagne"] .tv-side::after{content:"";position:absolute;pointer-events:none;border:1px solid rgba(217,180,106,.55)}
+[data-look="champagne"] .tv-side::before{inset:1.8vh 1vw}
+[data-look="champagne"] .tv-side::after{inset:2.6vh 1.5vw;border-color:rgba(217,180,106,.25)}
+[data-look="champagne"] .tv-side h1,[data-look="champagne"] .tv-empty h2{text-transform:uppercase;letter-spacing:.14em;font-weight:700;background:linear-gradient(180deg,#F6E2A8,#C79A48 60%,#9C7331);-webkit-background-clip:text;background-clip:text;color:transparent}
+[data-look="champagne"] .tv-side h1{font-size:2.2vw;padding-top:2vh}
+[data-look="champagne"] .tv-side h1::after{content:"";display:block;width:40%;height:1px;margin:1.6vh auto 0;background:#D9B46A}
+[data-look="champagne"] .tv-qr{border-radius:0;padding:.8vw;border:.25vw solid #D9B46A;box-shadow:0 0 0 .35vw #15120E,0 0 0 .45vw rgba(217,180,106,.5)}
+[data-look="champagne"] .tv-side .label{font-style:italic;color:#D9B46A}
+[data-look="champagne"] .tv-side .count{letter-spacing:.3em;text-transform:uppercase;font-size:.9vw;padding-bottom:2vh}
+[data-look="champagne"] .tv-new{border-radius:0;background:rgba(21,18,14,.85);color:#D9B46A;border:1px solid #D9B46A;letter-spacing:.3em;text-transform:uppercase;font-weight:500;font-size:1.05vw;padding:.9vh 1.4vw}
+[data-look="champagne"] .tv-empty{background:radial-gradient(circle at 40% 45%,#2A221A,#15120E 70%)}
+
+/* Garden Party: photos are white prints dropped on a sage table, with leafy corners. */
+[data-look="garden"] .tv{background:#E4EBDD url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Cpath d='M0 12L12 0' stroke='%23d3dccb' stroke-width='1'/%3E%3C/svg%3E")}
+[data-look="garden"] .tv::before,[data-look="garden"] .tv::after{content:"";position:absolute;width:22vw;height:22vw;z-index:1;pointer-events:none;opacity:.9;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cg fill='none' stroke='%233F6B4F' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M0 0C60 40 110 90 150 190'/%3E%3C/g%3E%3Cg fill='%233F6B4F'%3E%3Cellipse cx='40' cy='40' rx='22' ry='9' transform='rotate(-20 40 40)'/%3E%3Cellipse cx='62' cy='22' rx='20' ry='8' transform='rotate(50 62 22)'/%3E%3Cellipse cx='82' cy='78' rx='24' ry='9' transform='rotate(-10 82 78)'/%3E%3Cellipse cx='104' cy='60' rx='20' ry='8' transform='rotate(60 104 60)'/%3E%3Cellipse cx='118' cy='122' rx='22' ry='9' transform='rotate(0 118 122)'/%3E%3C/g%3E%3Cg fill='%238FB08F'%3E%3Cellipse cx='20' cy='30' rx='14' ry='6' transform='rotate(70 20 30)'/%3E%3Cellipse cx='96' cy='104' rx='16' ry='6' transform='rotate(70 96 104)'/%3E%3Ccircle cx='140' cy='150' r='6' fill='%23F2C6C2'/%3E%3Ccircle cx='70' cy='56' r='5' fill='%23F2C6C2'/%3E%3C/g%3E%3C/svg%3E") no-repeat top left/contain}
+[data-look="garden"] .tv::before{top:-2vw;left:-2vw}
+[data-look="garden"] .tv::after{bottom:-2vw;left:-2vw;transform:scaleY(-1)}
+[data-look="garden"] .tv .backdrop{display:none}
+[data-look="garden"] .tv .layer.show .photo{animation:none}
+[data-look="garden"] #a .print{--tilt:-1.8deg}
+[data-look="garden"] #b .print{--tilt:1.5deg}
+[data-look="garden"] .tv .print{background:#fff;padding:1.4vh 1.4vh 0;box-shadow:0 1.8vh 4.5vh rgba(31,42,34,.28),0 .3vh .8vh rgba(31,42,34,.15);transform:rotate(var(--tilt))}
+[data-look="garden"] .tv .layer.show .print{animation:drop 1.1s cubic-bezier(.2,.9,.3,1.15) both}
+@keyframes drop{from{opacity:0;transform:translateY(-6vh) rotate(calc(var(--tilt) * 4))}to{opacity:1;transform:rotate(var(--tilt))}}
+[data-look="garden"] .tv .print img{max-width:64vw;max-height:72vh}
+[data-look="garden"] .tv .credit{margin:0;padding:1.6vh 0 2vh;font-family:var(--display);font-weight:400;font-size:1.8vw;color:#3F4E43;text-shadow:none}
+[data-look="garden"] .tv-side{background:#F7F9F3;box-shadow:-1vw 0 3vw rgba(31,42,34,.12);text-align:center}
+[data-look="garden"] .tv-side h1{color:#2F5A40;font-weight:400;font-size:2.7vw}
+[data-look="garden"] .tv-qr{border-radius:1.6vw;border:.35vw solid #3F6B4F;transform:rotate(-1.5deg);box-shadow:0 1vh 2.5vh rgba(31,42,34,.18)}
+[data-look="garden"] .tv-side .label{color:#3F6B4F}
+[data-look="garden"] .tv-new{left:auto;right:26vw;transform:rotate(4deg);background:#3F6B4F;color:#fff;border-radius:.4vw;box-shadow:0 .6vh 1.6vh rgba(31,42,34,.25)}
+[data-look="garden"] .tv-empty{background:transparent}
+
+/* Neon Night: glowing pink and cyan frames that flicker on, pulsing "New". */
+[data-look="neon"] .tv .backdrop{filter:blur(44px) brightness(.28) saturate(1.8)}
+[data-look="neon"] .tv .layer{transition-duration:.6s}
+[data-look="neon"] .tv .layer.show .photo{animation:none}
+[data-look="neon"] .tv .print img{max-width:65vw;max-height:78vh;border:.3vw solid #FF4FA3;border-radius:1.4vw;box-shadow:0 0 .8vw #FF4FA3,0 0 3.5vw rgba(255,79,163,.6),0 0 9vw rgba(92,225,255,.3)}
+[data-look="neon"] .tv .layer.show .print{animation:flickon 1.2s steps(1,end) both, punch .6s cubic-bezier(.2,.9,.3,1.3) both}
+@keyframes flickon{0%{opacity:0}10%{opacity:1}14%{opacity:.2}20%{opacity:1}26%{opacity:.4}32%,100%{opacity:1}}
+@keyframes punch{from{transform:scale(.94)}to{transform:scale(1)}}
+[data-look="neon"] .tv .credit{margin-top:2.4vh;font-family:var(--display);text-transform:uppercase;letter-spacing:.12em;font-size:1.3vw;color:#5CE1FF;text-shadow:0 0 .6vw #5CE1FF,0 0 1.8vw rgba(92,225,255,.6)}
+[data-look="neon"] .tv-side{background:#0E0B1A;border-left:.2vw solid #FF4FA3;box-shadow:-.3vw 0 2.5vw rgba(255,79,163,.45);text-align:center}
+[data-look="neon"] .tv-side h1,[data-look="neon"] .tv-empty h2{text-transform:uppercase;font-weight:800;color:#FFF3FA;text-shadow:0 0 .4vw #FF4FA3,0 0 1.4vw #FF4FA3,0 0 3vw rgba(255,79,163,.7);animation:buzz 7s infinite}
+[data-look="neon"] .tv-side h1{font-size:2.1vw}
+@keyframes buzz{0%,92%,100%{opacity:1}93%{opacity:.55}94%{opacity:1}96%{opacity:.7}97%{opacity:1}}
+[data-look="neon"] .tv-qr{border-radius:1vw;box-shadow:0 0 0 .25vw #5CE1FF,0 0 1.2vw #5CE1FF,0 0 3vw rgba(92,225,255,.5)}
+[data-look="neon"] .tv-side .label{font-size:1.2vw;text-transform:uppercase;letter-spacing:.08em;color:#5CE1FF;text-shadow:0 0 .8vw rgba(92,225,255,.8)}
+[data-look="neon"] .tv-side .count{color:#FF8CC6}
+[data-look="neon"] .tv-new{text-transform:uppercase;letter-spacing:.14em;font-family:var(--display);box-shadow:0 0 1vw #FF4FA3,0 0 3vw rgba(255,79,163,.7)}
+[data-look="neon"] .tv-new.show{animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 .4vw #FF4FA3,0 0 1vw rgba(255,79,163,.4)}}
+[data-look="neon"] .tv-empty{background:radial-gradient(circle at 40% 45%,#231B45,#0E0B1A 70%)}
+
+/* Gallery White: framed and matted on a white wall, with a museum-style label. */
+[data-look="gallery"] .tv{background:linear-gradient(180deg,#F7F6F2,#ECEBE6)}
+[data-look="gallery"] .tv .backdrop{display:none}
+[data-look="gallery"] .tv .layer{transition-duration:1.8s}
+[data-look="gallery"] .tv .layer.show .photo{animation:none}
+[data-look="gallery"] .tv .print{background:#fff;padding:4vh 4vh 2.6vh;border:.7vh solid #1B1B1B;box-shadow:0 2.4vh 3.2vh -1.4vh rgba(0,0,0,.35),0 .4vh .8vh rgba(0,0,0,.08)}
+[data-look="gallery"] .tv .print img{max-width:58vw;max-height:66vh;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
+[data-look="gallery"] .tv .credit{align-self:flex-end;margin-top:2vh;font-size:.95vw;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:#595959;text-shadow:none}
+[data-look="gallery"] .tv-side{background:#FAFAF8;border-left:1px solid #E2E2DE}
+[data-look="gallery"] .tv-side h1{font-weight:400;font-size:3vw;line-height:1}
+[data-look="gallery"] .tv-side h1::after{content:"";display:block;width:3vw;height:2px;margin-top:2vh;background:#141414}
+[data-look="gallery"] .tv-qr{border-radius:0;border:1px solid #141414;padding:1.2vw}
+[data-look="gallery"] .tv-side .label{font-family:var(--body);font-size:.95vw;letter-spacing:.22em;text-transform:uppercase;color:#141414}
+[data-look="gallery"] .tv-side .count{letter-spacing:.22em;text-transform:uppercase;font-size:.85vw}
+[data-look="gallery"] .tv-new{border-radius:0;background:#141414;color:#fff;letter-spacing:.24em;text-transform:uppercase;font-weight:500;font-size:.95vw}
+[data-look="gallery"] .tv-empty{background:transparent}
+[data-look="gallery"] .tv-empty h2{font-weight:400}
+
+/* The same looks, lightly, on guests' phones and the QR cards. */
+[data-look="champagne"] .hero h1,[data-look="champagne"] .pcard h1{text-transform:uppercase;letter-spacing:.1em;background:linear-gradient(180deg,#F6E2A8,#C79A48 60%,#9C7331);-webkit-background-clip:text;background-clip:text;color:transparent}
+[data-look="champagne"] .pcard{border:1px solid #D9B46A;outline:1px solid rgba(217,180,106,.5);outline-offset:-3mm;border-radius:0}
+[data-look="champagne"] .btn{border-radius:0;letter-spacing:.12em;text-transform:uppercase;font-size:15px}
+[data-look="garden"] body{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Cpath d='M0 12L12 0' stroke='%23e2e9dc' stroke-width='1'/%3E%3C/svg%3E")}
+[data-look="garden"] .pcard{border:0;box-shadow:0 2mm 6mm rgba(31,42,34,.2);background:#fff}
+[data-look="garden"] .hero h1,[data-look="garden"] .pcard h1{color:#2F5A40;font-weight:400}
+[data-look="neon"] .hero h1,[data-look="neon"] .pcard h1{text-transform:uppercase;color:#FFF3FA;text-shadow:0 0 6px #FF4FA3,0 0 18px #FF4FA3}
+[data-look="neon"] .btn:not(.btn-ghost){box-shadow:0 0 14px rgba(255,79,163,.6)}
+[data-look="neon"] .pcard{border-color:#FF4FA3;box-shadow:0 0 0 1mm #0E0B1A,0 0 0 1.6mm #5CE1FF}
+[data-look="gallery"] .hero h1,[data-look="gallery"] .pcard h1{font-weight:400}
+[data-look="gallery"] .pcard{border:1.5mm solid #1B1B1B;border-radius:0;padding:14mm}
+[data-look="gallery"] .btn{border-radius:0}

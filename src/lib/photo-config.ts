@@ -28,25 +28,25 @@ export type PhotoTheme = {
 // Four fixed, tested looks. Locked in at purchase, like the storybook themes.
 export const PHOTO_THEMES: PhotoTheme[] = [
   {
-    id: 'champagne', name: 'Champagne', tagline: 'Black and gold, for a night to remember', mode: 'dark',
+    id: 'champagne', name: 'Champagne', tagline: 'Art-deco gold frames on black, for a night to remember', mode: 'dark',
     fonts: { display: 'Cormorant Garamond', body: 'Jost' },
     google: 'family=Cormorant+Garamond:wght@500;600;700&family=Jost:wght@400;500;600',
     vars: { '--bg': '#15120E', '--surface': '#221D17', '--ink': '#F6EEDF', '--muted': '#CBBFA8', '--line': '#3A3228', '--accent': '#D9B46A', '--accent-ink': '#15120E' },
   },
   {
-    id: 'garden', name: 'Garden Party', tagline: 'Fresh sage and soft white, for daytime do’s', mode: 'light',
+    id: 'garden', name: 'Garden Party', tagline: 'Photos drop in like prints on a sage table, for daytime do’s', mode: 'light',
     fonts: { display: 'DM Serif Display', body: 'Karla' },
     google: 'family=DM+Serif+Display&family=Karla:wght@400;500;700',
     vars: { '--bg': '#F1F4EC', '--surface': '#FFFFFF', '--ink': '#1F2A22', '--muted': '#4F5E53', '--line': '#D5DDCF', '--accent': '#3F6B4F', '--accent-ink': '#FFFFFF' },
   },
   {
-    id: 'neon', name: 'Neon Night', tagline: 'Hot pink on midnight, for the dance floor', mode: 'dark',
+    id: 'neon', name: 'Neon Night', tagline: 'Glowing pink and cyan frames, for the dance floor', mode: 'dark',
     fonts: { display: 'Unbounded', body: 'Manrope' },
     google: 'family=Unbounded:wght@600;800&family=Manrope:wght@400;600;700',
     vars: { '--bg': '#0E0B1A', '--surface': '#1A1530', '--ink': '#F4F1FF', '--muted': '#B8B0D8', '--line': '#2E2750', '--accent': '#FF4FA3', '--accent-ink': '#0E0B1A' },
   },
   {
-    id: 'gallery', name: 'Gallery White', tagline: 'Clean and minimal, lets the photos do the talking', mode: 'light',
+    id: 'gallery', name: 'Gallery White', tagline: 'Framed and matted like a gallery wall, lets the photos talk', mode: 'light',
     fonts: { display: 'Instrument Serif', body: 'Instrument Sans' },
     google: 'family=Instrument+Serif&family=Instrument+Sans:wght@400;500;600',
     vars: { '--bg': '#FAFAF8', '--surface': '#FFFFFF', '--ink': '#141414', '--muted': '#595959', '--line': '#E2E2DE', '--accent': '#141414', '--accent-ink': '#FFFFFF' },

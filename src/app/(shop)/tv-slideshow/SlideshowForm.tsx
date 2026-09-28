@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { SLIDESHOW_PRODUCT as P, cleanTitle, toSlug } from '@/lib/slideshow-config';
 import { money } from '@/lib/money';
 import { PayLater } from '@/components/PayLater';
+import { ROOT_DOMAIN } from '@/lib/domain';
 
 export function SlideshowForm() {
   const [title, setTitle] = useState('');
@@ -37,7 +38,7 @@ export function SlideshowForm() {
           </div>
         </div>
         <ol className="steps steps-compact">
-          <li><b>Pay and pick your address</b><span>e.g. {slug || 'happy-50th-dad'}.[yourdomain]</span></li>
+          <li><b>Pay and pick your address</b><span>e.g. {slug || 'happy-50th-dad'}.{ROOT_DOMAIN}</span></li>
           <li><b>Upload photos and videos</b><span>Straight after paying, from your phone or computer.</span></li>
           <li><b>Open it on the TV</b><span>It plays on a loop. Click once for sound.</span></li>
         </ol>
@@ -60,7 +61,7 @@ export function SlideshowForm() {
           <div className="slug-row">
             <input id="ss-slug" value={slug} maxLength={30} placeholder="happy-50th-dad" autoCapitalize="off" spellCheck={false}
               onChange={(e) => { setSlugEdited(true); setSlug(toSlug(e.target.value)); }} />
-            <span>.[yourdomain]</span>
+            <span>.{ROOT_DOMAIN}</span>
           </div>
           <span className="hint">If it&rsquo;s taken, we add a number to the end.</span>
         </div>
