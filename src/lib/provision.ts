@@ -108,7 +108,7 @@ async function sendStoryEmail(p: Party, paid: number, resend = false) {
       <h1 style="font-size:26px;margin:0 0 8px">${n}'s storybook is live!</h1>
       <p style="margin:0 0 20px">Everything you need for the party is below. Keep this email — the host link is private to you.</p>
       <table role="presentation" cellpadding="0" cellspacing="0">
-        ${button(partyUrl(p.slug, '/tv'), 'Open on the TV', 'Open this in the TV browser on the day. It shows the QR code and every note as it arrives.')}
+        ${button(partyUrl(p.slug, '/tv'), 'Open on the TV', `Open this in the TV browser on the day. It shows the QR code and every note as it arrives. Hard to type on the TV? Go to <b>${siteUrl().replace(/^https?:\/\//, '')}/tv</b> instead and enter the code it shows on your host page.`)}
         ${button(partyUrl(p.slug, '/card'), 'Print the QR cards', 'Print a few for the tables so everyone can join in.')}
         ${button(hostLink(p), 'Your host page (private)', `Change the wording, control TV sound, remove messages, and download the finished storybook as a printable PDF. Host key: <b>${p.hostKey}</b>`)}
         ${button(partyUrl(p.slug, '/guide'), 'Read the setup guide', 'Five minutes to get the TV ready.')}
@@ -132,7 +132,7 @@ async function sendPhotoEmail(p: Party, paid: number, resend = false) {
       <h1 style="font-size:26px;margin:0 0 8px">${n}: your photo wall is live</h1>
       <p style="margin:0 0 20px">Everything you need is below. Keep this email — the host link is private to you.</p>
       <table role="presentation" cellpadding="0" cellspacing="0">
-        ${button(partyUrl(p.slug, '/tv'), 'Open the slideshow on the TV', 'Shows every photo as it arrives, with the QR code on screen.')}
+        ${button(partyUrl(p.slug, '/tv'), 'Open the slideshow on the TV', `Shows every photo as it arrives, with the QR code on screen. Hard to type on the TV? Go to <b>${siteUrl().replace(/^https?:\/\//, '')}/tv</b> instead and enter the code it shows on your host page.`)}
         ${button(partyUrl(p.slug, '/card'), 'Print the QR cards', 'Put them on the tables and by the door.')}
         ${button(hostLink(p), 'Your host page (private)', `Change the wording, hide or remove photos, close uploads, and download every photo. Host key: <b>${p.hostKey}</b>`)}
         ${button(partyUrl(p.slug, '/guide'), 'Read the setup guide', 'Five minutes before guests arrive.')}
@@ -159,7 +159,7 @@ async function sendSlideshowEmail(p: Party, paid: number, resend = false) {
       <p style="margin:0 0 20px">Your slideshow address is ready. Add your photos and videos, then open the address on the TV on the day.</p>
       <table role="presentation" cellpadding="0" cellspacing="0">
         ${button(uploadLink(p), 'Upload photos and videos', 'Private to you. Come back any time to add or remove things.')}
-        ${button(partyUrl(p.slug), 'Your slideshow', `Open this on the TV: <b>${partyUrl(p.slug).replace(/^https?:\/\//, '')}</b>`)}
+        ${button(partyUrl(p.slug), 'Your slideshow', `Open this on the TV: <b>${partyUrl(p.slug).replace(/^https?:\/\//, '')}</b>. Or go to <b>${siteUrl().replace(/^https?:\/\//, '')}/tv</b> and enter the code it shows on your upload page.`)}
       </table>
       <p style="font-size:13px;color:#5E4C70">Paid ${money(paid)}. Your slideshow plays until ${new Date(p.expiresAt).toLocaleDateString('en-NZ', { day: 'numeric', month: 'long', year: 'numeric' })}, then the files are deleted.</p>
     </div>`,

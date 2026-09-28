@@ -69,6 +69,10 @@ interface Store {
   setReviewStatus(id: string, status: Review['status']): Promise<Review | null>;
   hasPurchased(email: string, product: string): Promise<boolean>;
   addSignup(email: string, topic: string): Promise<boolean>; // false = already signed up
+  // TV pairing codes (see tv-pairing.ts). Codes older than `minutes` count as expired.
+  addPairing(code: string, device: string, minutes: number): Promise<boolean>; // false = code in use
+  pairingForDevice(device: string, minutes: number): Promise<{ slug: string | null } | null>;
+  claimPairing(code: string, slug: string, minutes: number): Promise<boolean>;
 }
 
 // ── Postgres ────────────────────────────────────────────────
@@ -118,6 +122,9 @@ function postgresStore(url: string): Store {
         status text NOT NULL DEFAULT 'pending', created_at bigint NOT NULL
       )`;
       await sql`CREATE INDEX IF NOT EXISTS reviews_product_idx ON reviews (product, status, created_at)`;
+      await sql`CREATE TABLE IF NOT EXISTS tv_pairings (
+        code text PRIMARY KEY, device text UNIQUE NOT NULL, slug text, created_at timestamptz NOT NULL DEFAULT now()
+      )`;
       await sql`CREATE TABLE IF NOT EXISTS signups (
         email text NOT NULL, topic text NOT NULL, created_at bigint NOT NULL, PRIMARY KEY (email, topic)
       )`;
@@ -232,16 +239,33 @@ function postgresStore(url: string): Store {
       const rows = await sql`INSERT INTO signups (email, topic, created_at) VALUES (lower(${email}), ${topic}, ${Date.now()}) ON CONFLICT DO NOTHING RETURNING email`;
       return rows.length > 0;
     },
+    async addPairing(code, device, minutes) {
+      await init();
+      await sql`DELETE FROM tv_pairings WHERE created_at < now() - make_interval(mins => ${minutes})`;
+      return (await sql`INSERT INTO tv_pairings (code, device) VALUES (${code}, ${device}) ON CONFLICT DO NOTHING RETURNING code`).length > 0;
+    },
+    async pairingForDevice(device, minutes) {
+      await init();
+      const r = (await sql`SELECT slug FROM tv_pairings WHERE device = ${device}
+        AND (slug IS NOT NULL OR created_at > now() - make_interval(mins => ${minutes}))`)[0];
+      return r ? { slug: (r.slug as string | null) ?? null } : null;
+    },
+    async claimPairing(code, slug, minutes) {
+      await init();
+      return (await sql`UPDATE tv_pairings SET slug = ${slug}
+        WHERE code = ${code} AND slug IS NULL AND created_at > now() - make_interval(mins => ${minutes}) RETURNING code`).length > 0;
+    },
   };
 }
 
 // ── Local JSON file (development only) ──────────────────────
-type FileData = { parties: (Party & { cleaned?: boolean })[]; notes: (Note & { slug: string })[]; photos: (Photo & { slug: string })[]; reviews: Review[]; signups: { email: string; topic: string; createdAt: number }[] };
+type Pairing = { code: string; device: string; slug: string | null; createdAt: number };
+type FileData = { parties: (Party & { cleaned?: boolean })[]; notes: (Note & { slug: string })[]; photos: (Photo & { slug: string })[]; reviews: Review[]; signups: { email: string; topic: string; createdAt: number }[]; pairings: Pairing[] };
 function fileStore(): Store {
   const file = path.join(process.cwd(), '.data', 'store.json');
   const load = async (): Promise<FileData> => {
     const d = JSON.parse(await fs.readFile(file, 'utf8').catch(() => '{}'));
-    return { parties: (d.parties ?? []).map((p: Party) => ({ ...p, product: p.product ?? 'story' })), notes: d.notes ?? [], photos: d.photos ?? [], reviews: d.reviews ?? [], signups: d.signups ?? [] };
+    return { parties: (d.parties ?? []).map((p: Party) => ({ ...p, product: p.product ?? 'story' })), notes: d.notes ?? [], photos: d.photos ?? [], reviews: d.reviews ?? [], signups: d.signups ?? [], pairings: d.pairings ?? [] };
   };
   const save = async (d: FileData) => {
     await fs.mkdir(path.dirname(file), { recursive: true });
@@ -324,6 +348,24 @@ function fileStore(): Store {
       const e = email.toLowerCase();
       if (d.signups.some((x) => x.email === e && x.topic === topic)) return false;
       d.signups.push({ email: e, topic, createdAt: Date.now() }); await save(d); return true;
+    },
+    async addPairing(code, device, minutes) {
+      const d = await load();
+      const cutoff = Date.now() - minutes * 60_000;
+      d.pairings = d.pairings.filter((x) => x.createdAt > cutoff);
+      if (d.pairings.some((x) => x.code === code)) return false;
+      d.pairings.push({ code, device, slug: null, createdAt: Date.now() }); await save(d); return true;
+    },
+    async pairingForDevice(device, minutes) {
+      const x = (await load()).pairings.find((p) => p.device === device);
+      if (!x || (!x.slug && x.createdAt < Date.now() - minutes * 60_000)) return null;
+      return { slug: x.slug };
+    },
+    async claimPairing(code, slug, minutes) {
+      const d = await load();
+      const x = d.pairings.find((p) => p.code === code && !p.slug && p.createdAt > Date.now() - minutes * 60_000);
+      if (!x) return false;
+      x.slug = slug; await save(d); return true;
     },
   };
 }
