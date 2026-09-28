@@ -572,5 +572,16 @@ a.tile-app:hover { box-shadow: 0 8px 0 var(--ink); }
 @media (max-width: 900px) { .keepsake { grid-template-columns: minmax(0, 1fr); gap: 28px; } }
 @media (max-width: 480px) { .keepsake-points { grid-template-columns: 1fr; } }
 
-/* Slideshow upload page: "Connect a TV" box */
-.up-connect { border: 1px solid rgba(46, 33, 64, 0.15); border-radius: 14px; padding: 14px 16px; margin: 0 0 16px; background: #fff; }
+/* Slideshow upload page: status pills and the "Connect a TV" card (matches the host dashboards) */
+.up-pills { display: flex; gap: 8px; margin: 0 0 8px; }
+.up-pill { font-size: 13px; font-weight: 800; border-radius: 999px; padding: 4px 12px; background: #fff; border: 1px solid var(--line); }
+.up-pill.live { background: #E3F4F1; border-color: transparent; color: var(--teal); display: inline-flex; align-items: center; gap: 6px; }
+.up-pill.live::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--teal); }
+.up-connect { display: grid; grid-template-columns: 1fr auto; gap: 12px 20px; align-items: center; background: linear-gradient(135deg, #2E2140, #4A3566); color: #D9CFEA; border-radius: 24px; padding: 20px 22px; margin: 0 0 20px; }
+.up-connect b { display: block; font-family: var(--font-display), sans-serif; font-size: 22px; color: #fff; margin-bottom: 2px; }
+.up-connect strong { color: #fff; }
+.up-connect form { display: flex; gap: 8px; }
+.up-connect input { width: 150px; min-height: 48px; border-radius: 14px; border: 0; padding: 0 14px; font: inherit; font-size: 17px; letter-spacing: .06em; }
+.up-connect .btn { background: var(--sun); color: var(--ink); min-height: 48px; }
+.up-connect p { grid-column: 1 / -1; margin: 0; color: #FFE3A3; font-weight: 700; font-size: 14px; }
+@media (max-width: 700px) { .up-connect { grid-template-columns: 1fr; } .up-connect input { flex: 1; width: auto; } }
