@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { PRODUCTS } from '@/lib/catalog';
 import { money } from '@/lib/money';
 
-export const metadata = { title: `Shop — ${BRAND.name}` };
+export const metadata = { title: 'Shop', alternates: { canonical: '/products' } };
 
 export default function Shop() {
   const packs = PRODUCTS.filter((p) => p.kind === 'pack');

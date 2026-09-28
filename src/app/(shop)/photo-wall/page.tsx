@@ -1,15 +1,21 @@
-import { BRAND } from '@/lib/brand';
 import { PHOTO_PRODUCT, PHOTO_THEMES } from '@/lib/photo-config';
 import { ProductStory } from '@/components/ProductStory';
 import { PartyScene } from '@/components/PartyScene';
 import { PhotoPreview } from '@/components/PhotoPreview';
 import { PhotoForm } from './PhotoForm';
 import { ROOT_DOMAIN } from '@/lib/domain';
+import { pageMeta, JsonLd, productLd } from '@/lib/seo';
 
-export const metadata = { title: `${PHOTO_PRODUCT.name} — ${BRAND.name}` };
+export const metadata = pageMeta(
+  '/photo-wall',
+  'Party Photo Wall: Guests Scan a QR Code to Share Photos',
+  'Guests scan a QR code to upload party photos to one shared album that plays live on your TV. No app. Download every photo after. 21sts, 40ths, weddings. NZ.',
+);
 
 export default function PhotoWallPage() {
   return (
+    <>
+    <JsonLd data={productLd({ name: PHOTO_PRODUCT.name, description: PHOTO_PRODUCT.blurb, path: '/photo-wall', price: PHOTO_PRODUCT.price, category: 'Party apps' })} />
     <ProductStory
       reviewId="photos"
       productName={PHOTO_PRODUCT.name}
@@ -46,5 +52,6 @@ export default function PhotoWallPage() {
     >
       <PhotoForm />
     </ProductStory>
+    </>
   );
 }

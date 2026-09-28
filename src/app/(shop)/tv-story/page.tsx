@@ -1,4 +1,3 @@
-import { BRAND } from '@/lib/brand';
 import { STORY_PRODUCT, STORY_VIDEO, THEMES } from '@/lib/story';
 import { VideoFeature } from '@/components/VideoFeature';
 import { KeepsakeFeature } from '@/components/KeepsakeFeature';
@@ -8,13 +7,20 @@ import { PartyScene } from '@/components/PartyScene';
 import { ThemePreview } from '@/components/ThemePreview';
 import { StoryForm } from './StoryForm';
 import { ROOT_DOMAIN } from '@/lib/domain';
+import { pageMeta, JsonLd, productLd } from '@/lib/seo';
 
-export const metadata = { title: `${STORY_PRODUCT.name} — ${BRAND.name}` };
+export const metadata = pageMeta(
+  '/tv-story',
+  'Kids Birthday Party Idea: QR Code Messages on the TV',
+  'A kids birthday party idea for the TV: guests scan a QR code and write a wish that pops up as a storybook page. Five themes, printable storybook PDF. NZ.',
+);
 
 export default function TvStoryPage() {
   const casts = loadCasts();
   const dino = THEMES.find((t) => t.id === 'dino') ?? THEMES[0];
   return (
+    <>
+    <JsonLd data={productLd({ name: STORY_PRODUCT.name, description: STORY_PRODUCT.blurb, path: '/tv-story', price: STORY_PRODUCT.price, category: 'Party apps' })} />
     <ProductStory
       reviewId="story"
       feature={<VideoFeature {...STORY_VIDEO} />}
@@ -53,5 +59,6 @@ export default function TvStoryPage() {
     >
       <StoryForm casts={casts} />
     </ProductStory>
+    </>
   );
 }
