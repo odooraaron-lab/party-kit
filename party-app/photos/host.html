@@ -3,56 +3,85 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Host tools</title>
-<link rel="stylesheet" href="/photo-app/photo.css">
+<title>Host dashboard: {{PARTY_NAME}}</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Grandstander:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/party-app/host.css">
 <script src="/photo-app/photo.js"></script>
 </head>
-<body>
-<main class="wrap stack">
-  <h1 style="font-size:40px">Host tools</h1>
+<body class="hd">
+<header class="hd-top"><div class="hd-top-in">
+  <span class="hd-logo">{{LOGO}} {{BRAND}} <small>&middot; Host dashboard</small></span>
+  <span class="hd-addr">{{PARTY_ADDR}}</span>
+</div></header>
 
-  <section class="card" id="gate">
-    <p style="margin-top:0">Open the host link from your email, or paste the host key from it here.</p>
-    <label for="key">Host key</label>
-    <input id="key" class="field" autocomplete="off" autocapitalize="off" spellcheck="false">
-    <button class="btn" id="unlock" style="margin-top:14px">Unlock</button>
-    <p class="status" id="gate-status" role="status"></p>
-  </section>
+<main class="hd-wrap">
+  <div id="gate" class="hd-gate">
+    <div class="hd-card">
+      <h1>Host dashboard</h1>
+      <p class="hint">Open the host link from your email, or paste the host key from it here.</p>
+      <label for="key">Host key</label>
+      <input id="key" class="field" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="xxxx-xxxx-xxxx">
+      <div class="hd-row" style="justify-content:center"><button class="hd-btn berry" id="unlock">Open my dashboard</button></div>
+      <p class="status" id="gate-status" role="status" style="color:var(--berry)"></p>
+    </div>
+  </div>
 
-  <div id="tools" class="stack hidden">
-    <section class="card links">
-      <h2>Your links</h2>
-      <a href="/tv" target="_blank">Open the slideshow on the TV</a>
-      <a href="/card" target="_blank">Print the QR cards</a>
-      <a href="/" target="_blank">The page guests see</a>
-      <p class="hint" id="theme-line" style="margin-bottom:0"></p>
-    </section>
-
-    <section class="card">
-      <h2>Guests</h2>
-      <div class="switch-row"><label for="sw-uploads" style="margin:0">Guests can add photos</label><input type="checkbox" id="sw-uploads"></div>
-      <div class="switch-row"><label for="sw-gallery" style="margin:0">Guests can see everyone's photos</label><input type="checkbox" id="sw-gallery"></div>
-      <p class="hint">The TV slideshow always shows every photo you haven't removed.</p>
-      <p class="status" id="sw-status" role="status"></p>
-    </section>
-
-    <section class="card">
-      <h2>Words on the screens</h2>
-      <p class="hint">Type <b>{name}</b> for your event name. Leave a box empty to use the original wording.</p>
-      <div id="words"></div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px">
-        <button class="btn" id="words-save">Save wording</button>
-        <button class="btn btn-ghost" id="words-reset">Put back the original wording</button>
+  <div id="tools" class="hidden">
+    <div class="hd-head">
+      <div>
+        <div class="hd-kicker"><span class="hd-pill live">Live</span><span class="hd-pill">Party Photo Wall</span></div>
+        <h1>{{PARTY_NAME}}</h1>
+        <p>Your photo wall at a glance. Changes reach the TV and phones within a few seconds.</p>
       </div>
-      <p class="status" id="words-status" role="status"></p>
-    </section>
+    </div>
 
-    <section class="card">
-      <div class="section-head" style="margin-top:0"><h2>Photos</h2><span class="hint" id="count"></span></div>
-      <p class="hint">Remove anything that shouldn't be on the TV. It disappears from the slideshow within a few seconds.</p>
-      <a class="btn" id="download" href="#" download>Download every photo (zip)</a>
-      <div class="host-photos" id="photos"></div>
-    </section>
+    <nav class="hd-actions" aria-label="Quick links">
+      <a class="hd-action" href="/tv" target="_blank"><span class="hd-ico berry">{{ICON_TV}}</span><span>TV slideshow<small>Open on the TV</small></span></a>
+      <a class="hd-action" href="/card" target="_blank"><span class="hd-ico sun">{{ICON_QR}}</span><span>QR cards<small>Print for the tables</small></span></a>
+      <a class="hd-action" href="/" target="_blank"><span class="hd-ico teal">{{ICON_PHONE}}</span><span>Guest page<small>What guests see</small></span></a>
+      <a class="hd-action" id="download" href="#" download><span class="hd-ico">{{ICON_DOWNLOAD}}</span><span>Download all<small>Every photo, one zip</small></span></a>
+    </nav>
+
+    <div class="hd-grid">
+      <div class="hd-col">
+        <section class="hd-card">
+          <div class="hd-card-head"><h2>Photos <span class="hd-count" id="count"></span></h2></div>
+          <p class="hint">Remove anything that shouldn't be on the TV. It leaves the slideshow within a few seconds.</p>
+          <div class="host-photos" id="photos"></div>
+        </section>
+
+        <section class="hd-card">
+          <h2>Words on the screens</h2>
+          <p class="hint">Type <b>{name}</b> for your event name. Leave a box empty to use the original wording.</p>
+          <div id="words"></div>
+          <div class="hd-row">
+            <button class="btn btn-main" id="words-save">Save wording</button>
+            <button class="btn btn-soft" id="words-reset">Put back the original wording</button>
+          </div>
+          <p class="status" id="words-status" role="status"></p>
+        </section>
+      </div>
+
+      <div class="hd-col">
+        <!--connect-tv-->
+
+        <section class="hd-card">
+          <h2>Guests</h2>
+          <div class="toggles">
+            <label class="switch"><input type="checkbox" id="sw-uploads"><span class="track"><span class="knob"></span></span><span class="switch-text"><b>Guests can add photos</b><small>Turn off to close uploads</small></span></label>
+            <label class="switch"><input type="checkbox" id="sw-gallery"><span class="track"><span class="knob"></span></span><span class="switch-text"><b>Guests can see the album</b><small>The TV always shows every photo</small></span></label>
+          </div>
+          <p class="status" id="sw-status" role="status"></p>
+        </section>
+
+        <section class="hd-card">
+          <h2>Your look</h2>
+          <div class="hd-theme" style="margin-top:12px"><span class="dot" style="background:{{LOOK_SWATCH}}"></span><span><b id="theme-line"></b><span class="hint" style="display:block;margin:0">Set when you bought it.</span></span></div>
+        </section>
+      </div>
+    </div>
   </div>
 </main>
 <script>
@@ -78,7 +107,7 @@
   $("key").addEventListener("keydown", e => { if(e.key === "Enter") unlock($("key").value.trim()); });
 
   const T = window.PW_THEME || {};
-  $("theme-line").textContent = T.name ? "Your theme: " + T.name + "." : "";
+  $("theme-line").textContent = T.name || "";
 
   // ---- wording ----
   const FIELDS = [

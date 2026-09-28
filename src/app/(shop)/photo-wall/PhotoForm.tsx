@@ -4,6 +4,7 @@ import { PHOTO_PRODUCT, PHOTO_THEMES, cleanEventName, getPhotoTheme } from '@/li
 import { money } from '@/lib/money';
 import { PhotoPreview } from '@/components/PhotoPreview';
 import { PayLater } from '@/components/PayLater';
+import { ROOT_DOMAIN } from '@/lib/domain';
 
 const PREVIEW_FONTS = `https://fonts.googleapis.com/css2?${PHOTO_THEMES.map((t) => t.google).join('&')}&display=swap`;
 const toSlug = (s: string) => s.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/['’]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 30);
@@ -87,7 +88,7 @@ export function PhotoForm() {
           <div className="slug-row">
             <input id="ev-slug" value={slug} maxLength={30} placeholder="sams-40th" autoCapitalize="off" spellCheck={false}
               onChange={(e) => { setSlugEdited(true); setSlug(toSlug(e.target.value)); }} />
-            <span>.[yourdomain]</span>
+            <span>.{ROOT_DOMAIN}</span>
           </div>
           <span className="hint">If it's taken, we add a number to the end.</span>
         </div>

@@ -5,6 +5,7 @@ import type { CastArt } from '@/lib/cast';
 import { money } from '@/lib/money';
 import { ThemePreview } from '@/components/ThemePreview';
 import { PayLater } from '@/components/PayLater';
+import { ROOT_DOMAIN } from '@/lib/domain';
 
 const ages = Array.from({ length: STORY_PRODUCT.maxAge - STORY_PRODUCT.minAge + 1 }, (_, i) => i + STORY_PRODUCT.minAge);
 // Every theme's fonts, so the preview can switch instantly.
@@ -80,7 +81,7 @@ export function StoryForm({ casts }: { casts: Record<string, CastArt> }) {
         <div className="field">
           <label htmlFor="name">Child's first name</label>
           <input id="name" placeholder="e.g. Ari" value={name} maxLength={24} autoComplete="off" onChange={(e) => setName(e.target.value)} required />
-          <span className="hint">This also becomes the party's web address, e.g. {previewName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.[yourdomain]</span>
+          <span className="hint">This also becomes the party's web address, e.g. {previewName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.{ROOT_DOMAIN}</span>
         </div>
 
         <div className="field">

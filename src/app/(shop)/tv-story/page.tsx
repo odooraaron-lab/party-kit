@@ -7,6 +7,7 @@ import { ProductStory } from '@/components/ProductStory';
 import { PartyScene } from '@/components/PartyScene';
 import { ThemePreview } from '@/components/ThemePreview';
 import { StoryForm } from './StoryForm';
+import { ROOT_DOMAIN } from '@/lib/domain';
 
 export const metadata = { title: `${STORY_PRODUCT.name} — ${BRAND.name}` };
 
@@ -41,7 +42,7 @@ export default function TvStoryPage() {
         { value: '5', label: 'themes, each with its own cast of animals' },
       ]}
       includes={[
-        'Your own party site at their-name.[yourdomain]',
+        `Your own party site at their-name.${ROOT_DOMAIN}`,
         'The TV storybook with animated animals, music and sound effects',
         'Printable QR cards for the tables and the door',
         'A private host page to change the wording and remove any message',

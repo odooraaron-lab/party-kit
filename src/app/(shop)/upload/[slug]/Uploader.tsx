@@ -133,7 +133,7 @@ export function Uploader({ slug }: { slug: string }) {
     <div className="uploader">
       <div className="up-head">
         <div>
-          <p className="muted small" style={{ margin: 0 }}>Your slideshow</p>
+          <p className="up-pills"><span className="up-pill live">Live</span><span className="up-pill">TV Slideshow</span></p>
           <h1>{info.title}</h1>
           <p className="up-address">Plays at <a href={info.tvUrl} target="_blank" rel="noreferrer">{tvShort}</a></p>
         </div>
@@ -215,13 +215,15 @@ function ConnectTv({ slug, hostKey }: { slug: string; hostKey: string }) {
   const shop = typeof window !== 'undefined' ? window.location.host : '';
   return (
     <div className="up-connect">
-      <b>Connect a TV</b>
-      <span className="muted small"> On the TV’s web browser go to <b>{shop}/tv</b> and type the 6-digit code it shows:</span>
-      <form style={{ display: 'flex', gap: 8, marginTop: 8 }} onSubmit={(e) => { e.preventDefault(); connect(); }}>
-        <input value={code} onChange={(e) => setCode(e.target.value)} inputMode="numeric" autoComplete="off" maxLength={7} placeholder="123 456" style={{ maxWidth: 140 }} />
-        <button className="btn btn-dark" type="submit">Connect</button>
+      <div>
+        <b>Connect a TV</b>
+        <span>On the TV’s web browser go to <strong>{shop}/tv</strong> and type the 6-digit code it shows.</span>
+      </div>
+      <form onSubmit={(e) => { e.preventDefault(); connect(); }}>
+        <input value={code} onChange={(e) => setCode(e.target.value)} inputMode="numeric" autoComplete="off" maxLength={7} placeholder="123 456" aria-label="Code on the TV" />
+        <button className="btn" type="submit">Connect</button>
       </form>
-      {msg && <p className="muted small" role="status" style={{ margin: '6px 0 0' }}>{msg}</p>}
+      {msg && <p role="status">{msg}</p>}
     </div>
   );
 }

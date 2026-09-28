@@ -9,8 +9,8 @@
 </head>
 <body>
 <div class="tv" id="tv">
-  <div class="layer" id="a"><div class="backdrop"></div><div class="photo"></div><div class="credit"></div></div>
-  <div class="layer" id="b"><div class="backdrop"></div><div class="photo"></div><div class="credit"></div></div>
+  <div class="layer" id="a"><div class="backdrop"></div><div class="photo"><figure class="print"><img alt=""><figcaption class="credit"></figcaption></figure></div></div>
+  <div class="layer" id="b"><div class="backdrop"></div><div class="photo"><figure class="print"><img alt=""><figcaption class="credit"></figcaption></figure></div></div>
   <div class="tv-empty hidden" id="empty"><h2 id="empty-title"></h2><p id="empty-text"></p></div>
   <div class="tv-new" id="new">New photo</div>
   <aside class="tv-side">
@@ -74,7 +74,7 @@
     const back = front === "a" ? "b" : "a";
     const el = $(back);
     el.querySelector(".backdrop").style.backgroundImage = "url(\"" + p.thumbUrl + "\")";
-    el.querySelector(".photo").style.backgroundImage = "url(\"" + p.url + "\")";
+    el.querySelector(".print img").src = p.url;
     el.querySelector(".credit").textContent = p.from ? "Photo by " + p.from : "";
     el.classList.remove("show"); void el.offsetWidth; el.classList.add("show");
     $(front).classList.remove("show");

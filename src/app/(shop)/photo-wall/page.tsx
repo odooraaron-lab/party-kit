@@ -4,6 +4,7 @@ import { ProductStory } from '@/components/ProductStory';
 import { PartyScene } from '@/components/PartyScene';
 import { PhotoPreview } from '@/components/PhotoPreview';
 import { PhotoForm } from './PhotoForm';
+import { ROOT_DOMAIN } from '@/lib/domain';
 
 export const metadata = { title: `${PHOTO_PRODUCT.name} — ${BRAND.name}` };
 
@@ -34,7 +35,7 @@ export default function PhotoWallPage() {
         { value: '1', label: 'zip file with every photo, for keeps' },
       ]}
       includes={[
-        'Your own album at your-event.[yourdomain]',
+        `Your own album at your-event.${ROOT_DOMAIN}`,
         'A live TV slideshow with the QR code always on screen',
         'A shared album guests can browse on their phones',
         'Printable QR cards',

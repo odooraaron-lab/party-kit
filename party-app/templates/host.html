@@ -3,96 +3,111 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Host tools: the storybook</title>
+<title>Host dashboard: {{PARTY_NAME}}</title>
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Alegreya:wght@400;500;700&family=Grandstander:wght@600;700;800&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/style.css">
-<style>
-.words-group{border:2px solid var(--line);border-radius:.9rem;padding:.2rem 1rem .9rem;margin-top:.8rem;background:rgba(255,255,255,.5)}
-.words-group summary{cursor:pointer;font-weight:800;padding:.7rem 0;font-family:var(--display)}
-.words-group label{display:block;margin-top:.8rem}
-.words-group textarea.field{resize:vertical;min-height:5rem;line-height:1.4}
-.words-group .field{width:100%;max-width:100%;margin-left:0;margin-right:0;box-sizing:border-box}
-.kind-edit{border-top:2px dashed var(--line);margin-top:1rem;padding-top:.4rem}
-.kind-on{display:flex !important;align-items:center;gap:.5rem;font-weight:800}
-.kind-on input{width:1.3rem;height:1.3rem}
-select.field{appearance:auto}
-</style>
+<link href="https://fonts.googleapis.com/css2?family=Alegreya:wght@400;500;700&family=Grandstander:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/party-app/host.css">
 </head>
-<body>
-<main class="page host" style="padding-top:2rem">
- <section class="book" style="margin-top:0">
-  <h1>Host tools</h1>
-  <div id="login">
-    <p class="lede">Open the host link from your email, or paste the host key from it here.</p>
-    <label for="key">Host key</label>
-    <input class="field" type="password" id="key" autocomplete="current-password">
-    <div style="margin-top:1.2rem"><button class="btn btn-main" id="unlock">Unlock</button></div>
-    <div class="status" id="login-status" role="status"></div>
+<body class="hd">
+<header class="hd-top"><div class="hd-top-in">
+  <span class="hd-logo">{{LOGO}} {{BRAND}} <small>&middot; Host dashboard</small></span>
+  <span class="hd-addr">{{PARTY_ADDR}}</span>
+</div></header>
+
+<main class="hd-wrap">
+  <div id="login" class="hd-gate">
+    <div class="hd-card">
+      <h1>Host dashboard</h1>
+      <p class="hint">Open the host link from your email, or paste the host key from it here.</p>
+      <label for="key">Host key</label>
+      <input class="field" type="password" id="key" autocomplete="current-password" placeholder="xxxx-xxxx-xxxx">
+      <div class="hd-row" style="justify-content:center"><button class="hd-btn berry" id="unlock">Open my dashboard</button></div>
+      <div class="status" id="login-status" role="status" style="color:var(--berry)"></div>
+    </div>
   </div>
 
   <div id="tools" class="hidden">
-    <p class="lede">Open <a href="/tv" target="_blank">the TV screen</a> on the TV, and <a href="/card" target="_blank">print a QR card</a> for the tables.</p>
-    <p class="hint" id="storage-note"></p>
-
-    <div class="section">
-      <h2>Birthday details</h2>
-      <p class="hint">The name shows on the TV, guests' phones and the QR cards.</p>
-      <label for="name">Child's name</label>
-      <input class="field" type="text" id="name" maxlength="40">
-      <button class="btn btn-soft" id="save" style="margin-top:1rem">Save name</button>
-      <div class="status" id="save-status" role="status"></div>
+    <div class="hd-head">
+      <div>
+        <div class="hd-kicker"><span class="hd-pill live">Live</span><span class="hd-pill">Birthday Storybook TV</span></div>
+        <h1>{{PARTY_NAME}}&rsquo;s storybook</h1>
+        <p>Everything for the party in one place. Changes reach the TV within a few seconds.</p>
+      </div>
     </div>
 
-    <div class="section">
-      <h2>Your theme</h2>
-      <p class="lede" id="theme-name" style="margin:.2rem 0"></p>
-      <p class="hint" id="theme-tagline"></p>
-    </div>
+    <nav class="hd-actions" aria-label="Quick links">
+      <a class="hd-action" href="/tv" target="_blank"><span class="hd-ico berry">{{ICON_TV}}</span><span>TV screen<small>Open on the TV</small></span></a>
+      <a class="hd-action" href="/card" target="_blank"><span class="hd-ico sun">{{ICON_QR}}</span><span>QR cards<small>Print for the tables</small></span></a>
+      <a class="hd-action" href="/" target="_blank"><span class="hd-ico teal">{{ICON_PHONE}}</span><span>Guest page<small>What guests see</small></span></a>
+      <a class="hd-action" id="keepsake" href="#"><span class="hd-ico">{{ICON_BOOK}}</span><span>Storybook PDF<small>Print or keep</small></span></a>
+    </nav>
+    <p class="hint hidden" id="storage-note"></p>
 
-    <div class="section">
-      <h2>Words on the screens</h2>
-      <p class="hint">Change any wording to suit your party. Type <b>{name}</b> for the child's name and <b>{birthday}</b> for "first birthday", "second birthday" and so on. Leave a box empty to use the original wording.</p>
-      <div id="words"></div>
-      <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem">
-        <button class="btn btn-main" style="width:auto" id="words-save">Save wording</button>
-        <button class="btn btn-soft" id="words-reset">Put back the original wording</button>
-      </div>
-      <div class="status" id="words-status" role="status"></div>
-    </div>
+    <div class="hd-grid">
+      <div class="hd-col">
+        <section class="hd-card">
+          <div class="hd-card-head"><h2>Storybook pages <span class="hd-count" id="count">0</span></h2></div>
+          <p class="hint">Every message guests write becomes a page. Remove anything that shouldn't be on the TV.</p>
+          <ul class="list" id="list"></ul>
+        </section>
 
-    <div class="section">
-      <h2>TV sound</h2>
-      <p class="hint">Changes reach the TV within a few seconds. The TV still needs one click (or any key) on the day before browsers allow it to make sound.</p>
-      <div class="toggles">
-        <label class="switch"><input type="checkbox" id="snd-music"><span class="track"><span class="knob"></span></span><span class="switch-text"><b>Music box</b><small>Soft nursery tunes in the background</small></span></label>
-        <label class="switch"><input type="checkbox" id="snd-sfx"><span class="track"><span class="knob"></span></span><span class="switch-text"><b>Sound effects</b><small>New-page chime, the cow's moo, and friends</small></span></label>
-        <label class="switch"><input type="checkbox" id="snd-simple"><span class="track"><span class="knob"></span></span><span class="switch-text"><b>Older TV mode</b><small>Plays pre-recorded sounds instead. Turn on if the TV stays silent.</small></span></label>
+        <section class="hd-card">
+          <h2>Words on the screens</h2>
+          <p class="hint">Type <b>{name}</b> for the child's name and <b>{birthday}</b> for "first birthday", "second birthday" and so on. Leave a box empty to use the original wording.</p>
+          <div id="words"></div>
+          <div class="hd-row">
+            <button class="btn btn-main" id="words-save">Save wording</button>
+            <button class="btn btn-soft" id="words-reset">Put back the original wording</button>
+          </div>
+          <div class="status" id="words-status" role="status"></div>
+        </section>
       </div>
-      <label>How often the characters do something</label>
-      <div class="seg" role="radiogroup" aria-label="How often the characters do something">
-        <button type="button" class="seg-btn" data-gap="20" role="radio">Often<small>about every 20s</small></button>
-        <button type="button" class="seg-btn" data-gap="45" role="radio">Normal<small>about every 45s</small></button>
-        <button type="button" class="seg-btn" data-gap="90" role="radio">Now and then<small>about every 90s</small></button>
-      </div>
-      <label for="snd-vol">Volume <span id="snd-vol-val"></span></label>
-      <input type="range" id="snd-vol" min="0" max="100" step="5" class="slider">
-      <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem">
-        <button class="btn btn-soft" id="snd-mute">Mute everything</button>
-        <button class="btn btn-soft" id="snd-test">Play a test chime on the TV</button>
-      </div>
-      <div class="status" id="snd-status" role="status"></div>
-    </div>
 
-    <div class="section">
-      <h2>All pages (<span id="count">0</span>)</h2>
-      <p class="hint">Remove anything that shouldn't be on the TV. After the party, download the storybook to print or keep.</p>
-      <a class="btn btn-soft" id="keepsake" href="#" style="margin-top:.6rem">Download the printable storybook (PDF)</a>
-      <ul class="list" id="list"></ul>
+      <div class="hd-col">
+        <!--connect-tv-->
+
+        <section class="hd-card">
+          <h2>Birthday details</h2>
+          <p class="hint">Shows on the TV, guests' phones and the QR cards.</p>
+          <label for="name">Child's name</label>
+          <div class="hd-row" style="margin-top:0">
+            <input class="field" type="text" id="name" maxlength="40">
+            <button class="btn btn-soft" id="save">Save</button>
+          </div>
+          <div class="status" id="save-status" role="status"></div>
+        </section>
+
+        <section class="hd-card">
+          <h2>Your theme</h2>
+          <div class="hd-theme" style="margin-top:12px"><span class="dot"></span><span><b id="theme-name"></b><span class="hint" id="theme-tagline" style="display:block;margin:0"></span></span></div>
+        </section>
+
+        <section class="hd-card">
+          <h2>TV sound</h2>
+          <p class="hint">The TV needs one click (or any key) on the day before browsers allow sound.</p>
+          <div class="toggles">
+            <label class="switch"><input type="checkbox" id="snd-music"><span class="track"><span class="knob"></span></span><span class="switch-text"><b>Music box</b><small>Soft nursery tunes in the background</small></span></label>
+            <label class="switch"><input type="checkbox" id="snd-sfx"><span class="track"><span class="knob"></span></span><span class="switch-text"><b>Sound effects</b><small>New-page chime, the cow's moo, and friends</small></span></label>
+            <label class="switch"><input type="checkbox" id="snd-simple"><span class="track"><span class="knob"></span></span><span class="switch-text"><b>Older TV mode</b><small>Pre-recorded sounds. Turn on if the TV stays silent.</small></span></label>
+          </div>
+          <label>How often the characters do something</label>
+          <div class="seg" role="radiogroup" aria-label="How often the characters do something">
+            <button type="button" class="seg-btn" data-gap="20" role="radio">Often<small>every 20s</small></button>
+            <button type="button" class="seg-btn" data-gap="45" role="radio">Normal<small>every 45s</small></button>
+            <button type="button" class="seg-btn" data-gap="90" role="radio">Now and then<small>every 90s</small></button>
+          </div>
+          <label for="snd-vol">Volume <span id="snd-vol-val"></span></label>
+          <input type="range" id="snd-vol" min="0" max="100" step="5" class="slider">
+          <div class="hd-row">
+            <button class="btn btn-soft" id="snd-mute">Mute everything</button>
+            <button class="btn btn-soft" id="snd-test">Test chime</button>
+          </div>
+          <div class="status" id="snd-status" role="status"></div>
+        </section>
+      </div>
     </div>
   </div>
- </section>
 </main>
 <script src="/shared.js"></script>
 <script>
