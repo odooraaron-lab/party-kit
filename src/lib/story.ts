@@ -22,12 +22,15 @@ export const STORY_PRODUCT = {
 //     and set src: '/videos/storybook.mp4'. Add a poster image (a still) the same way.
 //  2. YouTube: upload it (unlisted is fine) and paste the video ID, e.g. 'dQw4w9WgXcQ'.
 export const STORY_VIDEO = {
-  src: '',        // e.g. '/videos/storybook.mp4'
-  poster: '',     // e.g. '/videos/storybook-poster.jpg'
+  src: '/videos/storybook-party.mp4',
+  poster: '/videos/storybook-party-poster.jpg',
   youtubeId: '',  // e.g. 'dQw4w9WgXcQ' (used if src is empty)
   captions: '',   // optional subtitles file, e.g. '/videos/storybook.vtt'
   title: 'See it at a real party',
   text: 'Watch guests scan the QR code and their messages land on the TV, page by page.',
+  loop: true,     // short clip: plays silently on repeat (controls still turn the sound on)
+  duration: 'PT12S',
+  uploadDate: '2026-09-29',
 };
 
 // ── The five themes ─────────────────────────────────────────

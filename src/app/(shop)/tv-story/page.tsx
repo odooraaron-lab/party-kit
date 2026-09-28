@@ -7,7 +7,7 @@ import { PartyScene } from '@/components/PartyScene';
 import { ThemePreview } from '@/components/ThemePreview';
 import { StoryForm } from './StoryForm';
 import { ROOT_DOMAIN } from '@/lib/domain';
-import { pageMeta, JsonLd, productLd } from '@/lib/seo';
+import { pageMeta, JsonLd, productLd, SITE } from '@/lib/seo';
 
 export const metadata = pageMeta(
   '/tv-story',
@@ -20,7 +20,15 @@ export default function TvStoryPage() {
   const dino = THEMES.find((t) => t.id === 'dino') ?? THEMES[0];
   return (
     <>
-    <JsonLd data={productLd({ name: STORY_PRODUCT.name, description: STORY_PRODUCT.blurb, path: '/tv-story', price: STORY_PRODUCT.price, category: 'Party apps' })} />
+    <JsonLd data={[
+      productLd({ name: STORY_PRODUCT.name, description: STORY_PRODUCT.blurb, path: '/tv-story', price: STORY_PRODUCT.price, category: 'Party apps' }),
+      {
+        '@context': 'https://schema.org', '@type': 'VideoObject',
+        name: 'Birthday Storybook TV at a kids party', description: STORY_VIDEO.text,
+        thumbnailUrl: `${SITE}${STORY_VIDEO.poster}`, contentUrl: `${SITE}${STORY_VIDEO.src}`,
+        uploadDate: STORY_VIDEO.uploadDate, duration: STORY_VIDEO.duration,
+      },
+    ]} />
     <ProductStory
       reviewId="story"
       feature={<VideoFeature {...STORY_VIDEO} />}
