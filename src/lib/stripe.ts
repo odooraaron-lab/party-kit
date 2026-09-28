@@ -9,4 +9,11 @@ export function stripe(): Stripe {
   return client;
 }
 
-export const siteUrl = () => (process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000').replace(/\/$/, '');
+// The shop's own address, used for Stripe's return links and emails. Forgiving on purpose:
+// a blank value falls back to Vercel's address, and a missing https:// is added.
+export const siteUrl = () => {
+  const raw = (process.env.NEXT_PUBLIC_SITE_URL || '').trim()
+    || (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : '')
+    || 'http://localhost:3000';
+  return (/^https?:\/\//.test(raw) ? raw : `https://${raw}`).replace(/\/+$/, '');
+};
