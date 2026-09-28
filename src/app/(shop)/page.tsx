@@ -10,6 +10,16 @@ import { ShopGrid } from '@/components/ShopGrid';
 import { LatestReviews } from '@/components/Reviews';
 import { SignupForm } from '@/components/SignupForm';
 import { LogoMark } from '@/components/Logo';
+import { pageMeta, JsonLd, organizationLd, faqLd, SITE } from '@/lib/seo';
+import { GUIDES } from '@/lib/guides';
+import { BRAND as B } from '@/lib/brand';
+
+export const metadata = pageMeta(
+  '/',
+  `${B.name}: Party Ideas for the TV, QR Code Photo Sharing & Kids Parties`,
+  'Instant party ideas for your TV. Guests scan a QR code to share photos or birthday messages that pop up live on screen. Kids parties, big birthdays, NZ.',
+  { title: { absolute: `${B.name}: Party Ideas for the TV, QR Code Photo Sharing & Kids Parties` } },
+);
 
 const FAQ: [string, string][] = [
   ['What are the “Instant” products?', 'Party apps that are ready the moment you pay: your own web address, a link for the TV, and everything else by email. Nothing to post, nothing to install.'],
@@ -109,6 +119,20 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="section">
+        <div className="shop-head"><h2>Party ideas and guides</h2><Link href="/ideas" className="muted">All party ideas →</Link></div>
+        <div className="guide-grid" style={{ marginTop: 0 }}>
+          {GUIDES.slice(0, 3).map((g) => (
+            <Link key={g.slug} href={`/ideas/${g.slug}`} className="guide-card">
+              <span className="guide-kicker">{g.kicker}</span>
+              <h3 style={{ fontSize: 22, fontWeight: 800 }}>{g.h1}</h3>
+              <span className="guide-more">Read the guide →</span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <JsonLd data={[organizationLd(), { '@context': 'https://schema.org', '@type': 'WebSite', name: B.name, url: SITE }, faqLd(FAQ)]} />
       <section className="section" id="faq">
         <h2>Questions parents ask</h2>
         <div className="faq">

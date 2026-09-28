@@ -1,13 +1,19 @@
-import { BRAND } from '@/lib/brand';
 import { SLIDESHOW_PRODUCT as P } from '@/lib/slideshow-config';
 import { ProductStory } from '@/components/ProductStory';
 import { PartyScene } from '@/components/PartyScene';
 import { SlideshowForm } from './SlideshowForm';
+import { pageMeta, JsonLd, productLd } from '@/lib/seo';
 
-export const metadata = { title: `${P.name} — ${BRAND.name}` };
+export const metadata = pageMeta(
+  '/tv-slideshow',
+  'TV Slideshow for Parties: Photos & Videos on Any TV',
+  'Upload photos and videos and get a web address that plays them on any TV, on repeat. Perfect for 50ths, 60ths, anniversaries and farewells. No laptop needed.',
+);
 
 export default function SlideshowPage() {
   return (
+    <>
+    <JsonLd data={productLd({ name: P.name, description: P.blurb, path: '/tv-slideshow', price: P.price, category: 'Party apps' })} />
     <ProductStory
       reviewId="slideshow"
       productName={P.name}
@@ -43,5 +49,6 @@ export default function SlideshowPage() {
     >
       <SlideshowForm />
     </ProductStory>
+    </>
   );
 }

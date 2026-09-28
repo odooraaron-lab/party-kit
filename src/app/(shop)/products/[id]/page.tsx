@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { BRAND } from '@/lib/brand';
+import { pageMeta, JsonLd, productLd, breadcrumbLd } from '@/lib/seo';
 import { STOCK, getStock, findListing, listingHref } from '@/lib/listings';
 import { money } from '@/lib/money';
 import { ProductArt } from '@/components/ProductArt';
@@ -16,7 +16,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const p = getStock((await params).id);
-  return p ? { title: `${p.name} — ${BRAND.name}`, description: p.blurb } : {};
+  return p ? pageMeta(`/products/${p.id}`, `${p.name}: ${p.category} for Kids Parties NZ`, p.blurb) : {};
 }
 
 export default async function StockProductPage({ params }: Props) {
@@ -27,6 +27,10 @@ export default async function StockProductPage({ params }: Props) {
 
   return (
     <>
+      <JsonLd data={[
+        productLd({ name: p.name, description: p.blurb, path: `/products/${p.id}`, price: p.price, category: p.category, available: soldOut ? 'OutOfStock' : 'PreOrder' }),
+        breadcrumbLd([{ name: 'Shop', path: '/products' }, { name: p.name, path: `/products/${p.id}` }]),
+      ]} />
       <nav className="crumbs" aria-label="Breadcrumb">
         <Link href="/products">Shop</Link><span aria-hidden="true">/</span><span>{p.category}</span>
       </nav>

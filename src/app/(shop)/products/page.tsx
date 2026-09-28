@@ -1,8 +1,8 @@
-import { BRAND } from '@/lib/brand';
+import { pageMeta } from '@/lib/seo';
 import { loadCasts } from '@/lib/cast';
 import { ShopGrid } from '@/components/ShopGrid';
 
-export const metadata = { title: `All products — ${BRAND.name}` };
+export const metadata = pageMeta('/products', 'Party Supplies & Kids Party Packs NZ', 'Instant party apps for the TV plus kids party packs, decorations, candles and party bag fillers. Made in New Zealand.');
 
 export default function Products() {
   return (

@@ -1,7 +1,7 @@
 // A video section for a product page. Shows the video once one is set in the config,
 // and a clearly marked placeholder until then.
-export function VideoFeature({ src, poster, youtubeId, captions, title, text }: {
-  src: string; poster: string; youtubeId: string; captions: string; title: string; text: string;
+export function VideoFeature({ src, poster, youtubeId, captions, title, text, loop = false }: {
+  src: string; poster: string; youtubeId: string; captions: string; title: string; text: string; loop?: boolean;
 }) {
   const hasVideo = Boolean(src || youtubeId);
   return (
@@ -12,7 +12,7 @@ export function VideoFeature({ src, poster, youtubeId, captions, title, text }: 
       </div>
       <div className="video-frame">
         {src ? (
-          <video controls playsInline preload="metadata" poster={poster || undefined}>
+          <video controls playsInline preload="metadata" poster={poster || undefined} {...(loop ? { autoPlay: true, muted: true, loop: true } : {})}>
             <source src={src} type={src.endsWith(".webm") ? "video/webm" : "video/mp4"} />
             {captions && <track kind="captions" src={captions} srcLang="en" label="English" default />}
             Your browser can’t play this video.

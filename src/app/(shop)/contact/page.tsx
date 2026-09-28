@@ -1,9 +1,10 @@
+import { pageMeta } from '@/lib/seo';
 import Link from 'next/link';
 import { BRAND } from '@/lib/brand';
 import { LogoMark } from '@/components/Logo';
 import { ContactForm } from '@/components/ContactForm';
 
-export const metadata = { title: `Contact and about us — ${BRAND.name}`, description: `Get in touch with ${BRAND.name}, and read how it started.` };
+export const metadata = pageMeta('/contact', 'Contact Us', `Get in touch with ${BRAND.name}, a small New Zealand team making party ideas for the TV.`);
 
 // Everything in [BRACKETS] is a placeholder for your own words.
 export default function ContactPage() {
