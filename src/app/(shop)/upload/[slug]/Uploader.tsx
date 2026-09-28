@@ -140,6 +140,8 @@ export function Uploader({ slug }: { slug: string }) {
         <a className="btn btn-dark" href={info.tvUrl} target="_blank" rel="noreferrer">Open slideshow</a>
       </div>
 
+      <ConnectTv slug={slug} hostKey={key} />
+
       <label
         className={`dropzone${drag ? ' is-drag' : ''}`}
         onDragOver={(e) => { e.preventDefault(); setDrag(true); }}
@@ -194,6 +196,32 @@ export function Uploader({ slug }: { slug: string }) {
         This page is private to you, so keep the link. On the day, open <b>{tvShort}</b> on the TV and click once for sound. Anything that won&rsquo;t play on a TV is skipped automatically.
         Your slideshow plays until {new Date(info.expiresAt).toLocaleDateString('en-NZ', { day: 'numeric', month: 'long', year: 'numeric' })}.
       </p>
+    </div>
+  );
+}
+
+// The TV shows a 6-digit code at <shop>/tv; typing it here sends that TV to this slideshow.
+function ConnectTv({ slug, hostKey }: { slug: string; hostKey: string }) {
+  const [code, setCode] = useState('');
+  const [msg, setMsg] = useState('');
+  async function connect() {
+    setMsg('Connecting…');
+    const r = await fetch('/api/tv/claim', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ slug, key: hostKey, code }) })
+      .catch(() => null);
+    const j = r ? await r.json().catch(() => ({})) : {};
+    if (r?.ok) { setCode(''); setMsg('Connected! The TV will switch over in a few seconds.'); }
+    else setMsg(j.error || 'Couldn’t reach the server. Try again.');
+  }
+  const shop = typeof window !== 'undefined' ? window.location.host : '';
+  return (
+    <div className="up-connect">
+      <b>Connect a TV</b>
+      <span className="muted small"> On the TV’s web browser go to <b>{shop}/tv</b> and type the 6-digit code it shows:</span>
+      <form style={{ display: 'flex', gap: 8, marginTop: 8 }} onSubmit={(e) => { e.preventDefault(); connect(); }}>
+        <input value={code} onChange={(e) => setCode(e.target.value)} inputMode="numeric" autoComplete="off" maxLength={7} placeholder="123 456" style={{ maxWidth: 140 }} />
+        <button className="btn btn-dark" type="submit">Connect</button>
+      </form>
+      {msg && <p className="muted small" role="status" style={{ margin: '6px 0 0' }}>{msg}</p>}
     </div>
   );
 }

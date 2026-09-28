@@ -514,3 +514,6 @@ a.tile-app:hover { box-shadow: 0 8px 0 var(--ink); }
 .keepsake-points span { color: var(--muted); font-size: 14px; }
 @media (max-width: 900px) { .keepsake { grid-template-columns: minmax(0, 1fr); gap: 28px; } }
 @media (max-width: 480px) { .keepsake-points { grid-template-columns: 1fr; } }
+
+/* Slideshow upload page: "Connect a TV" box */
+.up-connect { border: 1px solid rgba(46, 33, 64, 0.15); border-radius: 14px; padding: 14px 16px; margin: 0 0 16px; background: #fff; }
