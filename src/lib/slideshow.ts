@@ -9,7 +9,7 @@ import { usingBlob, deleteImages, readLocalImage } from './photos';
 
 export async function ownedSlideshow(slug: unknown, key: unknown): Promise<LoadedParty | null> {
   const f = await findParty(String(slug ?? ''));
-  if (!f || f.party.product !== 'slideshow' || f.expired) return null;
+  if (!f || f.party.product !== 'slideshow' || f.expired || f.disabled) return null;
   const a = Buffer.from(String(key ?? '').trim().toLowerCase());
   const b = Buffer.from(f.party.hostKey);
   return a.length === b.length && crypto.timingSafeEqual(a, b) ? f : null;

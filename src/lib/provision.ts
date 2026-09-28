@@ -10,6 +10,7 @@ import { partyUrl } from './urls';
 import { siteUrl } from './stripe';
 import { sendEmail, escapeHtml } from './email';
 import { money } from './money';
+import { reportToHQ } from './hq';
 
 // Turns a paid Stripe session into a live party site (storybook or photo wall),
 // then emails the links. Safe to call more than once for the same session
@@ -60,15 +61,29 @@ export async function provisionParty(session: Stripe.Checkout.Session): Promise<
       if (e instanceof SessionExists) return (await db().bySession(session.id))!;
       throw e;
     }
-    if (slideshow) await sendSlideshowEmail(party, session.amount_total ?? 0);
-    else if (photos) await sendPhotoEmail(party, session.amount_total ?? 0);
-    else await sendStoryEmail(party, session.amount_total ?? 0);
+    await sendWelcomeEmail(party, session.amount_total ?? 0);
     await notifyOwner(party, session.amount_total ?? 0);
+    await reportSite(party);
     return party;
   }
   throw new Error('No free subdomain for ' + childName);
 }
 export const provisionStory = provisionParty;
+
+// The "your site is ready" email for any product. `resend` skips the idempotency key so the admin's "Resend email" works.
+export async function sendWelcomeEmail(p: Party, paid: number, resend = false) {
+  if (p.product === 'slideshow') await sendSlideshowEmail(p, paid, resend);
+  else if (p.product === 'photos') await sendPhotoEmail(p, paid, resend);
+  else await sendStoryEmail(p, paid, resend);
+}
+
+// Tells the admin about a site (new, turned off/on, or new expiry).
+export function reportSite(p: Party) {
+  return reportToHQ(p.product, {
+    type: 'site.upsert', slug: p.slug, url: partyUrl(p.slug), owner_email: p.email, owner_name: p.childName,
+    theme: p.style, status: p.disabled ? 'disabled' : 'live', expires_at: p.expiresAt, order_id: p.sessionId,
+  });
+}
 
 // 12 easy-to-read characters (no 0/O/1/l), e.g. "k7vq-m3xp-w9ha"
 function newHostKey(): string {
@@ -80,7 +95,7 @@ function newHostKey(): string {
 
 export const hostLink = (p: Party) => `${partyUrl(p.slug, '/host')}?key=${encodeURIComponent(p.hostKey)}`;
 
-async function sendStoryEmail(p: Party, paid: number) {
+async function sendStoryEmail(p: Party, paid: number, resend = false) {
   const n = escapeHtml(p.childName);
   const button = (url: string, label: string, note: string) =>
     `<tr><td style="padding:0 0 18px"><a href="${url}" style="display:inline-block;padding:12px 20px;border-radius:999px;background:#3B2A4A;color:#FFFDF6;text-decoration:none;font-weight:700">${label}</a>` +
@@ -88,7 +103,7 @@ async function sendStoryEmail(p: Party, paid: number) {
   await sendEmail({
     to: p.email,
     subject: `${p.childName}'s birthday storybook is ready`,
-    idempotencyKey: `story-${p.sessionId}`,
+    idempotencyKey: resend ? undefined : `story-${p.sessionId}`,
     html: `<div style="font-family:system-ui,sans-serif;max-width:560px;color:#3B2A4A">
       <h1 style="font-size:26px;margin:0 0 8px">${n}'s storybook is live!</h1>
       <p style="margin:0 0 20px">Everything you need for the party is below. Keep this email — the host link is private to you.</p>
@@ -104,7 +119,7 @@ async function sendStoryEmail(p: Party, paid: number) {
   });
 }
 
-async function sendPhotoEmail(p: Party, paid: number) {
+async function sendPhotoEmail(p: Party, paid: number, resend = false) {
   const n = escapeHtml(p.childName);
   const button = (url: string, label: string, note: string) =>
     `<tr><td style="padding:0 0 18px"><a href="${url}" style="display:inline-block;padding:12px 20px;border-radius:999px;background:#141414;color:#FFFFFF;text-decoration:none;font-weight:700">${label}</a>` +
@@ -112,7 +127,7 @@ async function sendPhotoEmail(p: Party, paid: number) {
   await sendEmail({
     to: p.email,
     subject: `Your photo wall for ${p.childName} is ready`,
-    idempotencyKey: `photos-${p.sessionId}`,
+    idempotencyKey: resend ? undefined : `photos-${p.sessionId}`,
     html: `<div style="font-family:system-ui,sans-serif;max-width:560px;color:#141414">
       <h1 style="font-size:26px;margin:0 0 8px">${n}: your photo wall is live</h1>
       <p style="margin:0 0 20px">Everything you need is below. Keep this email — the host link is private to you.</p>
@@ -131,14 +146,14 @@ async function sendPhotoEmail(p: Party, paid: number) {
 // Private link to the upload page (on the main site, not the TV address).
 export const uploadLink = (p: Party) => `${siteUrl()}/upload/${p.slug}?key=${encodeURIComponent(p.hostKey)}`;
 
-async function sendSlideshowEmail(p: Party, paid: number) {
+async function sendSlideshowEmail(p: Party, paid: number, resend = false) {
   const button = (url: string, label: string, note: string) =>
     `<tr><td style="padding:0 0 18px"><a href="${url}" style="display:inline-block;padding:12px 20px;border-radius:999px;background:#2E2140;color:#FFFFFF;text-decoration:none;font-weight:700">${label}</a>` +
     `<div style="font-size:14px;color:#5E4C70;margin-top:6px">${note}</div></td></tr>`;
   await sendEmail({
     to: p.email,
     subject: `Your TV slideshow "${p.childName}" is ready for photos`,
-    idempotencyKey: `slideshow-${p.sessionId}`,
+    idempotencyKey: resend ? undefined : `slideshow-${p.sessionId}`,
     html: `<div style="font-family:system-ui,sans-serif;max-width:560px;color:#2E2140">
       <h1 style="font-size:26px;margin:0 0 8px">${escapeHtml(p.childName)}</h1>
       <p style="margin:0 0 20px">Your slideshow address is ready. Add your photos and videos, then open the address on the TV on the day.</p>

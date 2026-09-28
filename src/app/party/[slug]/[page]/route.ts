@@ -3,6 +3,7 @@ import path from 'node:path';
 import { findParty } from '@/lib/party';
 import { themeCss, themeFontsHref } from '@/lib/story';
 import { photoThemeCss, photoFontsHref } from '@/lib/photos';
+import { beaconTag } from '@/lib/hq';
 
 // Serves the storybook app pages for one party. The middleware sends
 // ari.yourdomain/ → /party/ari/index, /tv → /party/ari/tv, etc.
@@ -18,7 +19,7 @@ async function template(product: keyof typeof DIRS, page: string) {
   return cache.get(key)!;
 }
 
-const html = (body: string, status = 200) =>
+const respond = (body: string, status = 200) =>
   new Response(body, {
     status,
     headers: { 'Content-Type': 'text/html; charset=utf-8', 'X-Robots-Tag': 'noindex, nofollow', 'Cache-Control': 'no-store' },
@@ -31,13 +32,15 @@ const simplePage = (title: string, text: string) =>
 
 export async function GET(_req: Request, { params }: { params: Promise<{ slug: string; page: string }> }) {
   const { slug, page } = await params;
-  if (!PAGES.has(page)) return html(simplePage('Page not found', 'Check the link and try again.'), 404);
+  if (!PAGES.has(page)) return respond(simplePage('Page not found', 'Check the link and try again.'), 404);
 
   const found = await findParty(slug);
-  if (!found) return html(simplePage('Party not found', "We couldn't find this party. Check the link in your email."), 404);
+  if (!found) return respond(simplePage('Party not found', "We couldn't find this party. Check the link in your email."), 404);
   if (found.expired) {
-    return html(simplePage(`${found.party.childName}'s party has finished`, 'This party page is no longer online. Thanks for celebrating!'), 410);
+    return respond(simplePage(`${found.party.childName}'s party has finished`, 'This party page is no longer online. Thanks for celebrating!'), 410);
   }
+  if (found.disabled) return respond(simplePage('This page is paused', 'Please get in touch with us if you think this is a mistake.'), 403);
+  const html = (body: string, status = 200) => respond(body.replace('</head>', beaconTag(found.party.product, slug, page === 'tv' || found.party.product === 'slideshow') + '</head>'), status);
 
   // The TV slideshow is a single screen: the address itself plays it.
   if (found.party.product === 'slideshow') {

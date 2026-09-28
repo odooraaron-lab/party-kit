@@ -47,6 +47,7 @@ function rateLimited(key: string) {
 function gone(found: LoadedParty | null) {
   if (!found) return err('This party page does not exist.', 404);
   if (found.expired) return err('This party has finished.', 410);
+  if (found.disabled) return err('This party is paused.', 403);
   return null;
 }
 

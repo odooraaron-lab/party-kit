@@ -27,7 +27,7 @@ export async function POST(req: Request) {
           product_data: { name: `${STORY_PRODUCT.name} · ${name}`, description: `${theme.name} theme · turning ${age}` },
         },
       }],
-      metadata: { kind: 'story', name, age: String(age), theme: theme.id },
+      metadata: { product: 'story', kind: 'story', name, age: String(age), theme: theme.id },
       success_url: `${siteUrl()}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${siteUrl()}/tv-story`,
       allow_promotion_codes: O.promotionCodes || undefined,
