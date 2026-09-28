@@ -34,7 +34,7 @@ export const PHOTO_THEMES: PhotoTheme[] = [
     vars: { '--bg': '#15120E', '--surface': '#221D17', '--ink': '#F6EEDF', '--muted': '#CBBFA8', '--line': '#3A3228', '--accent': '#D9B46A', '--accent-ink': '#15120E' },
   },
   {
-    id: 'garden', name: 'Garden Party', tagline: 'Photos drop in like prints on a sage table, for daytime do’s', mode: 'light',
+    id: 'garden', name: 'Garden Party', tagline: 'Prints drop onto a sage table among leafy bushes, for daytime do’s', mode: 'light',
     fonts: { display: 'DM Serif Display', body: 'Karla' },
     google: 'family=DM+Serif+Display&family=Karla:wght@400;500;700',
     vars: { '--bg': '#F1F4EC', '--surface': '#FFFFFF', '--ink': '#1F2A22', '--muted': '#4F5E53', '--line': '#D5DDCF', '--accent': '#3F6B4F', '--accent-ink': '#FFFFFF' },
@@ -46,10 +46,11 @@ export const PHOTO_THEMES: PhotoTheme[] = [
     vars: { '--bg': '#0E0B1A', '--surface': '#1A1530', '--ink': '#F4F1FF', '--muted': '#B8B0D8', '--line': '#2E2750', '--accent': '#FF4FA3', '--accent-ink': '#0E0B1A' },
   },
   {
-    id: 'gallery', name: 'Gallery White', tagline: 'Framed and matted like a gallery wall, lets the photos talk', mode: 'light',
-    fonts: { display: 'Instrument Serif', body: 'Instrument Sans' },
-    google: 'family=Instrument+Serif&family=Instrument+Sans:wght@400;500;600',
-    vars: { '--bg': '#FAFAF8', '--surface': '#FFFFFF', '--ink': '#141414', '--muted': '#595959', '--line': '#E2E2DE', '--accent': '#141414', '--accent-ink': '#FFFFFF' },
+    // id stays 'gallery' so parties already bought keep working.
+    id: 'gallery', name: 'Beige Pastel', tagline: 'Warm beige with soft pastel touches, calm and pretty', mode: 'light',
+    fonts: { display: 'Fraunces', body: 'Nunito Sans' },
+    google: 'family=Fraunces:wght@400;600&family=Nunito+Sans:wght@400;600;700',
+    vars: { '--bg': '#EADFD0', '--surface': '#F7EFE6', '--ink': '#4A3F35', '--muted': '#8A7B6B', '--line': '#DDD0BF', '--accent': '#C99A86', '--accent-ink': '#FFFFFF' },
   },
 ];
 export const getPhotoTheme = (id: string) => PHOTO_THEMES.find((t) => t.id === id);
