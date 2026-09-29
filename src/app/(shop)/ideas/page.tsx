@@ -20,7 +20,7 @@ export default function IdeasPage() {
           <div key={c.id} className="guide-cat">
             <h2 className="guide-cat-title">{c.name}</h2>
             <p className="muted">{c.blurb}</p>
-            <div className="guide-grid">
+            <div className="guide-grid m-swipe">
               {GUIDES.filter((g) => g.category === c.id).map((g) => (
                 <Link key={g.slug} href={`/ideas/${g.slug}`} className="guide-card">
                   <span className="guide-kicker">{g.kicker}</span>

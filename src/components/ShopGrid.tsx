@@ -12,7 +12,7 @@ import { ProductImage } from './ProductImage';
 // marked "Instant" so they stand out without being walled off from the rest.
 export function ShopGrid({ casts, listings = LISTINGS }: { casts: Record<string, CastArt>; listings?: Listing[] }) {
   return (
-    <div className={`shop-grid${listings.every((l) => l.kind === 'app') ? ' apps-only' : ''}`}>
+    <div className={`shop-grid${listings.every((l) => l.kind === 'app') ? ' apps-only m-swipe' : ''}`}>
       {listings.map((l) => (l.kind === 'app' ? <AppTile key={l.id} l={l} casts={casts} /> : <StockTile key={l.id} l={l} />))}
     </div>
   );

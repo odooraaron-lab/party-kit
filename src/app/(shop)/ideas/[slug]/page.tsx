@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { MobileBuyBar } from '@/components/MobileBuyBar';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { GUIDES, getGuide } from '@/lib/guides';
@@ -78,6 +79,9 @@ export default async function GuidePage({ params }: Props) {
           </aside>
         </div>
       </article>
+      {product && product.kind === 'app'
+        ? <MobileBuyBar title={product.name} note={`${money(product.price)} one-time · ready instantly`} href={product.href} label="Take a look" />
+        : <MobileBuyBar title="Party apps from $19" note="One-time · ready the moment you pay" href="/#shop" label="Shop now" />}
     </>
   );
 }
