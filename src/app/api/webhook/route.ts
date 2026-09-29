@@ -19,6 +19,12 @@ export async function POST(req: Request) {
     return new NextResponse('Bad signature', { status: 400 });
   }
 
+  // One Stripe account serves every myQR site (Resthome TV, Digital Signage…), so this webhook also
+  // hears about their payments. Only act on checkouts this shop created: an app kind or a cart.
+  if (event.type.startsWith('checkout.session.') && !isOurs(event.data.object as Stripe.Checkout.Session)) {
+    return NextResponse.json({ received: true, ignored: 'not a Wishcast checkout' });
+  }
+
   if (event.type === 'checkout.session.completed' || event.type === 'checkout.session.async_payment_succeeded') {
     const session = event.data.object as Stripe.Checkout.Session;
     if (session.payment_status === 'paid') {
@@ -59,6 +65,12 @@ export async function POST(req: Request) {
     }
   }
   return NextResponse.json({ received: true });
+}
+
+const APP_KINDS = ['story', 'photos', 'slideshow'];
+function isOurs(session: Stripe.Checkout.Session) {
+  const m = session.metadata ?? {};
+  return APP_KINDS.includes(m.kind ?? '') || Boolean(m.cart);
 }
 
 async function fulfil(session: Stripe.Checkout.Session, eventId: string) {
