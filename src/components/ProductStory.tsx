@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { money } from '@/lib/money';
+import { MobileBuyBar } from '@/components/MobileBuyBar';
 import { ReviewsSection, RatingBadge } from './Reviews';
 
 export type Stat = { value: string; label: string };
@@ -43,7 +44,7 @@ export function ProductStory(props: {
 
       <section className="section">
         <h2>Why it gets everyone involved</h2>
-        <div className="reasons">
+        <div className="reasons m-swipe">
           {props.reasons.map((r) => <div key={r.title} className="reason"><b>{r.title}</b><p>{r.text}</p></div>)}
         </div>
       </section>
@@ -67,6 +68,7 @@ export function ProductStory(props: {
       </section>
 
       <ReviewsSection product={props.reviewId} productName={props.productName} />
+      <MobileBuyBar title={`${props.productName}`} note={`${money(props.price)} one-time · ready instantly`} href="#order" label={`Make yours`} hideOn="#order" />
     </>
   );
 }

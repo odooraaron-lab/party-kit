@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { MobileBuyBar } from '@/components/MobileBuyBar';
 import { THEMES } from '@/lib/story';
 import { APPS } from '@/lib/listings';
 import { money } from '@/lib/money';
@@ -73,7 +74,7 @@ export default function Home() {
 
       <section className="section" id="which">
         <h2>Which one is right for your party?</h2>
-        <div className="compare">
+        <div className="compare m-swipe">
           {COMPARE.map((c) => {
             const app = APPS.find((a) => a.id === c.id)!;
             return (
@@ -98,7 +99,7 @@ export default function Home() {
             <span className="badge-soft">21sts · weddings · work dos</span>
             <h2>Having it at a bar or function venue?</h2>
             <p className="muted">Skip the laptop on a chair, the USB stick the TV won’t read, and the venue’s screen system only staff can run. Your Wishcast link plays on the venue’s TVs from any web browser, and guests add photos with a QR code.</p>
-            <div className="venue-links">
+            <div className="venue-links m-chips">
               <Link href="/ideas/display-photos-on-tv-at-venue">Photos on a venue TV</Link>
               <Link href="/ideas/21st-birthday-photo-slideshow">21st ideas</Link>
               <Link href="/ideas/work-christmas-party-ideas">Work Christmas parties</Link>
@@ -139,7 +140,7 @@ export default function Home() {
 
       <section className="section">
         <div className="shop-head"><h2>Party ideas and guides</h2><Link href="/ideas" className="muted">All party ideas →</Link></div>
-        <div className="guide-grid" style={{ marginTop: 0 }}>
+        <div className="guide-grid m-swipe" style={{ marginTop: 0 }}>
           {['display-photos-on-tv-at-venue', 'kids-birthday-party-ideas', 'qr-code-party-ideas'].map((s) => GUIDES.find((x) => x.slug === s)!).map((g) => (
             <Link key={g.slug} href={`/ideas/${g.slug}`} className="guide-card">
               <span className="guide-kicker">{g.kicker}</span>
@@ -158,6 +159,7 @@ export default function Home() {
         </div>
         <p className="muted" style={{ marginTop: 18 }}>Still wondering? <Link href="/contact">Get in touch</Link> — {BRAND.name} is a small team and we read every message.</p>
       </section>
+      <MobileBuyBar title="Party apps from $19" note="One-time · ready the moment you pay" href="#shop" label="Shop now" hideOn="#shop" />
     </>
   );
 }
