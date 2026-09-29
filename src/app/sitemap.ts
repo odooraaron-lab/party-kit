@@ -1,6 +1,5 @@
 import type { MetadataRoute } from 'next';
 import { SITE } from '@/lib/seo';
-import { STOCK } from '@/lib/listings';
 import { GUIDES } from '@/lib/guides';
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -15,7 +14,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     page('/ideas', 0.8, 'weekly'),
     ...GUIDES.map((g) => page(`/ideas/${g.slug}`, 0.7)),
     page('/products', 0.6),
-    ...STOCK.map((s) => page(`/products/${s.id}`, 0.4)),
     page('/contact', 0.3),
   ];
 }

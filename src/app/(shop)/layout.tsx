@@ -17,7 +17,7 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
           <nav className="footer-links" aria-label="Footer">
             <div><b>Products</b><Link href="/tv-story">Kids storybook</Link><Link href="/photo-wall">Party photo wall</Link><Link href="/tv-slideshow">TV slideshow</Link></div>
             <div><b>Help</b><Link href="/ideas">Party ideas</Link><Link href="/#faq">FAQ</Link><Link href="/contact">Contact us</Link><Link href="/contact#about">About us</Link></div>
-            <div><b>Shop</b><Link href="/products">All products</Link><Link href="/products/party-pack">Party packs</Link><Link href="/products/balloon-kit">Decorations</Link></div>
+            <div><b>Shop</b><Link href="/products">All products</Link><Link href="/ideas">Party ideas</Link></div>
           </nav>
         </div>
       </footer>

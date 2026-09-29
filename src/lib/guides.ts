@@ -139,11 +139,6 @@ export const GUIDES: Guide[] = [
         body: ['Fabric bunting lasts for years of birthdays, and compostable cups and plates mean less goes to landfill. Party bag fillers that get played with (not plastic that breaks the same day) go down better with parents too.'],
       },
       {
-        h2: 'Our party packs',
-        body: ['Our themed party packs and decorations are coming back soon. Tap “Notify me” on any product and we’ll email you as soon as they’re back in stock. In the meantime, our instant party apps are ready the moment you pay.'],
-        cta: { href: '/products', label: 'See all products' },
-      },
-      {
         h2: 'Add something for the big screen',
         body: ['If there’s a TV at the venue, put it to work. With the Birthday Storybook TV, guests scan a QR code and their birthday messages pop up on the TV as storybook pages.'],
         cta: { href: '/tv-story', label: 'See the Birthday Storybook TV' },

@@ -27,7 +27,6 @@ const FAQ: [string, string][] = [
   ['What do I need on the day?', 'A TV with a web browser (most smart TVs have one), or a laptop plugged into the TV. Casting from a laptop works too. And Wi-Fi.'],
   ['Is it a subscription?', 'No. Every product is a one-time payment.'],
   ['Can I change my theme after buying?', 'Themes are made for your party when you buy, so pick the one you love. You can preview every theme first.'],
-  ['When will the sold-out items be back?', 'Party packs and decorations are coming back soon. Tap “Notify me” on any product and we’ll email you once it’s back.'],
 ];
 
 const COMPARE: { id: string; best: string; guests: string; keep: string }[] = [
@@ -66,7 +65,7 @@ export default function Home() {
       <section className="section" id="shop">
         <div className="shop-head">
           <h2>Shop the party</h2>
-          <p className="muted">Instant party apps, plus decorations and packs (back soon).</p>
+          <p className="muted">Three instant party apps, ready the moment you pay.</p>
         </div>
         <ShopGrid casts={casts} />
       </section>

@@ -401,6 +401,10 @@ a.tile-app:hover { box-shadow: 0 8px 0 var(--ink); }
 .tile-stock[aria-disabled='true'] { cursor: default; }
 @media (max-width: 1000px) { .shop-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 560px) { .shop-grid { grid-template-columns: 1fr; gap: 16px; } .tile-app { grid-column: span 1; } }
+/* Apps only (stock hidden): three across, one each. */
+.shop-grid.apps-only { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.shop-grid.apps-only .tile-app { grid-column: span 1; }
+@media (max-width: 1000px) { .shop-grid.apps-only { grid-template-columns: minmax(0, 1fr); max-width: 620px; margin: 0 auto; } }
 
 /* ── Product story pages ── */
 .ps-hero { display: grid; grid-template-columns: 1fr 1.15fr; gap: 48px; align-items: center; padding: 40px 0 24px; }

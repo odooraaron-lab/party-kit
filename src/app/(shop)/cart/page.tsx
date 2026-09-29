@@ -41,7 +41,7 @@ export default function CartPage() {
       <div className="section stack" style={{ alignItems: 'flex-start' }}>
         <h1 style={{ fontSize: 40 }}>Your cart is empty</h1>
         <p className="muted">Start with a party pack, then add printables or the guest app.</p>
-        <Link href="/shop" className="btn btn-accent">Shop party packs</Link>
+        <Link href="/#shop" className="btn btn-accent">Shop the party</Link>
       </div>
     );
   }
