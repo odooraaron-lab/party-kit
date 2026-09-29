@@ -612,3 +612,27 @@ a.tile-app:hover { box-shadow: 0 8px 0 var(--ink); }
 .guide-more-box { border: 1px solid var(--line); border-radius: 24px; padding: 20px 24px; display: grid; gap: 8px; }
 .guide-more-box a { font-weight: 700; color: var(--accent); text-decoration: none; }
 @media (max-width: 900px) { .guide-body { grid-template-columns: 1fr; } .guide-side { position: static; } }
+
+/* ── Storybook hero art (product close-up: QR card → phone → TV) ── */
+.sh { position: relative; aspect-ratio: 1.12; border-radius: 32px; overflow: hidden; container-type: inline-size;
+  background: radial-gradient(circle at 78% 18%, #FFE7B3 0 28%, transparent 60%), linear-gradient(160deg, #FFF4E0, #FCE3EA 70%, #F6D6E0); }
+.sh-tv { position: absolute; right: 5%; top: 8%; width: 70%; }
+.sh-tv .tv-frame { border-radius: 3cqw; padding: 1.8cqw; box-shadow: 0 4cqw 7cqw -2cqw rgba(46, 33, 64, .35); }
+.sh-tv .tv-frame::after { bottom: -2.4cqw; height: 2.4cqw; }
+.sh-tv .tv-frame-screen { border-radius: 1.4cqw; }
+.sh-tv .tp { border-radius: 0; }
+.sh-toast { position: absolute; right: -1%; top: -5%; background: #fff; color: var(--ink); font-weight: 800; font-size: 2.6cqw; border-radius: 999px; padding: 1.1cqw 2.4cqw; box-shadow: 0 2cqw 4cqw -1cqw rgba(46, 33, 64, .35); display: flex; gap: 1cqw; align-items: center; white-space: nowrap; }
+.sh-toast i { font-style: normal; color: #C23A64; }
+.sh-arrow { position: absolute; left: 34%; top: 54%; width: 22%; }
+.sh-phone { position: absolute; left: 6%; bottom: 5%; width: 28%; aspect-ratio: 9 / 17; background: #fff; border: 1.6cqw solid var(--ink); border-radius: 5cqw; padding: 5cqw 2.6cqw 2.6cqw; display: flex; flex-direction: column; gap: 1.6cqw; transform: rotate(-5deg); box-shadow: 0 4cqw 7cqw -2cqw rgba(46, 33, 64, .45); }
+.sh-notch { position: absolute; top: 1.4cqw; left: 35%; right: 35%; height: 1.4cqw; border-radius: 999px; background: var(--ink); }
+.sh-ph-title { margin: 0; font-family: var(--font-display), sans-serif; font-weight: 800; font-size: 2.9cqw; line-height: 1.1; }
+.sh-chips { display: flex; gap: 1cqw; }
+.sh-chips span { font-size: 1.9cqw; font-weight: 800; border-radius: 999px; padding: .5cqw 1.4cqw; background: var(--sand); }
+.sh-chips .on { background: var(--sun); }
+.sh-text { flex: 1; font-size: 2cqw; line-height: 1.35; border: .3cqw solid var(--line); border-radius: 2cqw; padding: 1.6cqw; background: #FFFDF6; font-family: "Alegreya", Georgia, serif; }
+.sh-from { font-size: 2cqw; color: var(--muted); }
+.sh-send { background: var(--accent); color: #fff; font-weight: 800; font-size: 2.4cqw; text-align: center; border-radius: 999px; padding: 1.4cqw 0; }
+.sh-card { position: absolute; right: 7%; bottom: 7%; width: 20%; background: #fff; border-radius: 2.4cqw; padding: 2cqw; transform: rotate(6deg); box-shadow: 0 3cqw 5cqw -2cqw rgba(46, 33, 64, .35); text-align: center; font-size: 1.9cqw; line-height: 1.2; }
+.sh-qr { aspect-ratio: 1; margin-bottom: 1.4cqw; border: .8cqw solid var(--ink); border-radius: 1cqw; background: repeating-conic-gradient(var(--ink) 0 25%, #fff 0 50%) 0 0 / 22% 22%; }
+.sh-dot { position: absolute; width: 1.8cqw; height: 1.8cqw; border-radius: .4cqw; transform: rotate(20deg); }
