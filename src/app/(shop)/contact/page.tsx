@@ -15,9 +15,9 @@ export default function ContactPage() {
           <span className="ps-tag">About us</span>
           <h1>Parties are about the people. We built the rest.</h1>
           <p>
-            {BRAND.name} is a small New Zealand business run by [YOUR NAME(S)] in [YOUR TOWN].
-            [YOUR STORY: two or three sentences about how the first storybook was made for a party of your own,
-            and what happened when the guests started scanning.]
+            {BRAND.name} is a small New Zealand business run by parents. It started when we were planning our
+            own kids’ party and went looking for something that would get every guest involved, from the
+            grandparents to the littlest ones. We couldn’t find anything that did exactly that, so we made it.
           </p>
           <p>
             We make party ideas that do the work for you: put them on the TV, and guests of every age join in
