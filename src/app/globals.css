@@ -642,9 +642,8 @@ a.tile-app:hover { box-shadow: 0 8px 0 var(--ink); }
 .sh-dot { position: absolute; width: 1.8cqw; height: 1.8cqw; border-radius: .4cqw; transform: rotate(20deg); }
 
 /* Sold-out / coming-soon stock sits back so the instant QR apps stand out */
-.tile-stock { background: #F6F7FA; border-color: #E3E7EF; box-shadow: none; opacity: .72; transition: opacity .2s, filter .2s, transform .2s; }
-.tile-stock .tile-visual { filter: grayscale(.85) brightness(.96); transition: filter .2s; }
+.tile-stock { background: #FAFBFD; border-color: #E6EAF2; box-shadow: none; opacity: .9; transition: opacity .2s, filter .2s, transform .2s; }
+.tile-stock .tile-visual { filter: grayscale(.4) brightness(.98); transition: filter .2s; }
 .tile-stock .tile-body h3, .tile-stock .tile-foot b { color: #5E4C70; }
-.tile-stock .badge-status { background: #5E4C70; }
 .tile-stock:hover, .tile-stock:focus-visible { opacity: 1; }
 .tile-stock:hover .tile-visual, .tile-stock:focus-visible .tile-visual { filter: none; }
