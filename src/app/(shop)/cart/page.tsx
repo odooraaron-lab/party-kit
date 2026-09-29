@@ -103,7 +103,7 @@ export default function CartPage() {
           <div className="row"><span>Subtotal</span><span>{money(subtotal)}</span></div>
           <div className="row"><span>Shipping</span><span>{physical ? (shipping ? `from ${money(shipping)}` : 'Free') : 'None — digital only'}</span></div>
           <div className="row grand"><span>Total</span><span>{money(subtotal + shipping)}</span></div>
-          <div className="muted" style={{ fontSize: 13 }}>NZD. [GST NOTE]</div>
+          <div className="muted" style={{ fontSize: 13 }}>Prices in NZD.</div>
           <PayLater amount={subtotal + shipping} />
         </div>
 

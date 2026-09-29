@@ -6,7 +6,6 @@ import { ContactForm } from '@/components/ContactForm';
 
 export const metadata = pageMeta('/contact', 'Contact Us', `Get in touch with ${BRAND.name}, a small New Zealand team making party ideas for the TV.`);
 
-// Everything in [BRACKETS] is a placeholder for your own words.
 export default function ContactPage() {
   return (
     <>
@@ -40,9 +39,8 @@ export default function ContactPage() {
           <h2>Get in touch</h2>
           <p className="muted">Questions before you buy, help with an order, or ideas for something we should make. We read every message.</p>
           <dl className="contact-details">
-            <div><dt>Email</dt><dd><a href="mailto:[EMAIL]">[EMAIL]</a></dd></div>
-            <div><dt>We reply</dt><dd>[Within one working day]</dd></div>
-            <div><dt>Where</dt><dd>Online only, based in [TOWN], New Zealand</dd></div>
+            <div><dt>Email</dt><dd><a href="mailto:adminmyqr@gmail.com">adminmyqr@gmail.com</a></dd></div>
+            <div><dt>We reply</dt><dd>Within one working day</dd></div>
           </dl>
           <p className="muted small">Quick answers are often in our <Link href="/#faq">FAQ</Link>.</p>
         </div>
