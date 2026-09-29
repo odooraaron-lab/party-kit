@@ -408,11 +408,17 @@ export const GUIDES: Guide[] = [
         body: ['Mention it in your function pack or booking confirmation: “Want your photos on our TVs? Set up a Wishcast photo wall at myqr.co.nz/photo-wall.” Hosts buy it themselves in a couple of minutes and bring the link on the night.'],
         cta: { href: '/photo-wall', label: 'See the Party Photo Wall' },
       },
+      {
+        h2: 'Use the same TVs for your specials',
+        body: ['Between functions, your screens can sell for you. myQR Digital Signage shows your food and drink specials, events and announcements on every TV in the venue, scheduled by day and hour, from $39 a month.'],
+        cta: { href: 'https://digitalsignage.myqr.co.nz', label: 'See Digital Signage' },
+      },
     ],
     faq: [
       ['Does the venue pay for it?', 'No. The person hosting the function buys it for their event.'],
       ['What do staff need to do?', 'Open the host’s web link on the TV at the start of the function. That’s it.'],
       ['Will it interfere with our screen system?', 'No. It’s just a web page on the TV. Switch back to your usual input afterwards.'],
+      ['Can we use the same TVs for our own specials?', 'Yes. Our sister service, myQR Digital Signage (digitalsignage.myqr.co.nz), puts your food and drink specials and events on the same TVs for one flat monthly price.'],
     ],
   },
   // ─────────── Kids & QR codes ───────────
