@@ -3,8 +3,7 @@ import { VideoFeature } from '@/components/VideoFeature';
 import { KeepsakeFeature } from '@/components/KeepsakeFeature';
 import { loadCasts } from '@/lib/cast';
 import { ProductStory } from '@/components/ProductStory';
-import { PartyScene } from '@/components/PartyScene';
-import { ThemePreview } from '@/components/ThemePreview';
+import { StoryHeroArt } from '@/components/StoryHeroArt';
 import { StoryForm } from './StoryForm';
 import { ROOT_DOMAIN } from '@/lib/domain';
 import { pageMeta, JsonLd, productLd, SITE } from '@/lib/seo';
@@ -17,7 +16,7 @@ export const metadata = pageMeta(
 
 export default function TvStoryPage() {
   const casts = loadCasts();
-  const dino = THEMES.find((t) => t.id === 'dino') ?? THEMES[0];
+  const safari = THEMES.find((t) => t.id === 'safari') ?? THEMES[0];
   return (
     <>
     <JsonLd data={[
@@ -38,7 +37,7 @@ export default function TvStoryPage() {
       title="Every guest writes a page of the birthday storybook"
       pitch="Guests scan a QR code and write a birthday message on their phone. Seconds later it pops up on your TV as a new storybook page, with animated animals cheering it on."
       price={STORY_PRODUCT.price}
-      scene={<PartyScene crowd="kids" label="Kids and grown-ups cheering at a TV showing a birthday storybook"><ThemePreview theme={dino} art={casts[dino.id]} name="Ari" /></PartyScene>}
+      scene={<StoryHeroArt theme={safari} art={casts[safari.id]} name="Ari" />}
       steps={[
         { title: 'Pick a theme and add their name', text: 'Five themes, each with its own animals and colours. Your party site is live the moment you pay.' },
         { title: 'Put it on the TV', text: 'Open your link in the TV’s web browser and print the QR cards for the tables.' },
