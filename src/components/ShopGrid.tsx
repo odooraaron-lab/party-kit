@@ -6,7 +6,7 @@ import { PHOTO_THEMES } from '@/lib/photo-config';
 import type { CastArt } from '@/lib/cast';
 import { ThemePreview } from './ThemePreview';
 import { PhotoPreview } from './PhotoPreview';
-import { ProductArt } from './ProductArt';
+import { ProductImage } from './ProductImage';
 
 // The shop: instant apps mixed in with stock listings. Apps are wider and
 // marked "Instant" so they stand out without being walled off from the rest.
@@ -44,7 +44,7 @@ function StockTile({ l }: { l: StockListing }) {
   const label = l.status === 'sold-out' ? 'Sold out' : 'Coming soon';
   const body = (
     <>
-      <div className="tile-visual"><ProductArt kind={l.art} bg={l.bg} /><span className="badge-status">{label}</span></div>
+      <div className="tile-visual"><ProductImage listing={l} /><span className="badge-status">{label}</span></div>
       <div className="tile-body">
         <h3>{l.name}</h3>
         <p>{l.blurb}</p>

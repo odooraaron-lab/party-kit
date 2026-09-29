@@ -40,13 +40,13 @@ export const faqLd = (items: [string, string][]) => ({
   mainEntity: items.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
 });
 
-export const productLd = (p: { name: string; description: string; path: string; price: number; available?: 'InStock' | 'OutOfStock' | 'PreOrder'; category?: string }) => ({
+export const productLd = (p: { name: string; description: string; path: string; price: number; available?: 'InStock' | 'OutOfStock' | 'PreOrder'; category?: string; image?: string | null }) => ({
   '@context': 'https://schema.org',
   '@type': 'Product',
   name: p.name,
   description: p.description,
   url: `${SITE}${p.path}`,
-  image: `${SITE}/opengraph-image`,
+  image: `${SITE}${p.image || '/opengraph-image'}`,
   brand: { '@type': 'Brand', name: BRAND.name },
   ...(p.category ? { category: p.category } : {}),
   offers: {

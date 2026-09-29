@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 import { pageMeta, JsonLd, productLd, breadcrumbLd } from '@/lib/seo';
 import { STOCK, getStock, findListing, listingHref } from '@/lib/listings';
 import { money } from '@/lib/money';
-import { ProductArt } from '@/components/ProductArt';
+import { ProductImage, productPhoto } from '@/components/ProductImage';
 import { SignupForm } from '@/components/SignupForm';
 import { ReviewsSection, RatingBadge } from '@/components/Reviews';
 
@@ -28,7 +28,7 @@ export default async function StockProductPage({ params }: Props) {
   return (
     <>
       <JsonLd data={[
-        productLd({ name: p.name, description: p.blurb, path: `/products/${p.id}`, price: p.price, category: p.category, available: soldOut ? 'OutOfStock' : 'PreOrder' }),
+        productLd({ name: p.name, description: p.blurb, path: `/products/${p.id}`, price: p.price, category: p.category, available: soldOut ? 'OutOfStock' : 'PreOrder', image: productPhoto(p.id) }),
         breadcrumbLd([{ name: 'Shop', path: '/products' }, { name: p.name, path: `/products/${p.id}` }]),
       ]} />
       <nav className="crumbs" aria-label="Breadcrumb">
@@ -37,7 +37,7 @@ export default async function StockProductPage({ params }: Props) {
 
       <section className="sp-hero">
         <div className="sp-art">
-          <ProductArt kind={p.art} bg={p.bg} />
+          <ProductImage listing={p} />
           <span className="badge-status">{soldOut ? 'Sold out' : 'Coming soon'}</span>
         </div>
         <div className="sp-info">
@@ -72,7 +72,7 @@ export default async function StockProductPage({ params }: Props) {
         <div className="related">
           {related.map((r) => (
             <Link key={r.id} href={listingHref(r)} className="related-card">
-              {r.kind === 'stock' ? <ProductArt kind={r.art} bg={r.bg} /> : <div className="related-app"><span className="badge-instant">Instant</span><span>Ready the moment you pay</span></div>}
+              {r.kind === 'stock' ? <ProductImage listing={r} /> : <div className="related-app"><span className="badge-instant">Instant</span><span>Ready the moment you pay</span></div>}
               <div className="related-body"><b>{r.name}</b><span className="muted small">{money(r.price)}{r.kind === 'stock' ? (r.status === 'sold-out' ? ' · Sold out' : ' · Coming soon') : ''}</span></div>
             </Link>
           ))}
