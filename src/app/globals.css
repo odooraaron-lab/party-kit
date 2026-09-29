@@ -653,3 +653,15 @@ a.tile-app:hover { box-shadow: 0 8px 0 var(--ink); }
 .tile-stock:hover .tile-visual, .tile-stock:focus-visible .tile-visual { filter: none; }
 
 .product-photo { display: block; width: 100%; aspect-ratio: 300 / 180; object-fit: cover; }
+
+/* Events & venues band, guide categories */
+.venue-band-in { display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; background: var(--sky); border-radius: 28px; padding: 32px; }
+.venue-band-in > div { flex: 1 1 520px; }
+.venue-band h2 { margin: 10px 0 8px; }
+.venue-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.venue-links a { padding: 8px 14px; border-radius: 999px; background: #fff; border: 1.5px solid var(--line); font-weight: 800; font-size: 14px; text-decoration: none; color: inherit; }
+.venue-links a:hover { border-color: currentColor; }
+.guide-cat { margin-top: 40px; }
+.guide-cat-title { font-size: clamp(26px, 3vw, 34px); margin-bottom: 4px; }
+.guide-cat .guide-grid { margin-top: 16px; }
+.guide-card h3 { font-size: 22px; font-weight: 800; margin: 6px 0; }

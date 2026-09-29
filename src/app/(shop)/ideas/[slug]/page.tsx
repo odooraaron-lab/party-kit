@@ -22,7 +22,7 @@ export default async function GuidePage({ params }: Props) {
   const g = getGuide((await params).slug);
   if (!g) notFound();
   const product = g.product ? LISTINGS.find((l) => l.kind === 'app' && l.id === g.product) : null;
-  const others = GUIDES.filter((x) => x.slug !== g.slug).slice(0, 3);
+  const others = [...GUIDES.filter((x) => x.slug !== g.slug && x.category === g.category), ...GUIDES.filter((x) => x.category !== g.category)].slice(0, 4);
   const article = {
     '@context': 'https://schema.org', '@type': 'Article', headline: g.h1, description: g.description,
     url: `${SITE}/ideas/${g.slug}`, image: `${SITE}/opengraph-image`,
