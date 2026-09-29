@@ -7,7 +7,7 @@ import { pageMeta, JsonLd, productLd } from '@/lib/seo';
 export const metadata = pageMeta(
   '/tv-slideshow',
   'TV Slideshow for Parties: Photos & Videos on Any TV',
-  'Upload photos and videos and get a web address that plays them on any TV, on repeat. Perfect for 50ths, 60ths, anniversaries and farewells. No laptop needed.',
+  'Upload photos and videos and get a web address that plays them on any TV, at home or at the venue, on repeat. 21sts, 50ths, weddings and farewells. No laptop or USB needed.',
 );
 
 export default function SlideshowPage() {

@@ -16,14 +16,15 @@ import { BRAND as B } from '@/lib/brand';
 
 export const metadata = pageMeta(
   '/',
-  `${B.name}: Party Ideas for the TV, QR Code Photo Sharing & Kids Parties`,
-  'Instant party ideas for your TV. Guests scan a QR code to share photos or birthday messages that pop up live on screen. Kids parties, big birthdays, NZ.',
-  { title: { absolute: `${B.name}: Party Ideas for the TV, QR Code Photo Sharing & Kids Parties` } },
+  `${B.name}: Party Photos on the TV, QR Code Photo Sharing & Kids Party Ideas`,
+  'Put party photos on any TV, at home or at a bar or function venue. Guests scan a QR code and photos pop up live. 21sts, weddings, work Christmas parties, kids parties. NZ.',
+  { title: { absolute: `${B.name}: Party Photos on the TV, QR Code Photo Sharing & Kids Party Ideas` } },
 );
 
 const FAQ: [string, string][] = [
   ['What are the “Instant” products?', 'Party apps that are ready the moment you pay: your own web address, a link for the TV, and everything else by email. Nothing to post, nothing to install.'],
   ['Do guests need to download an app?', 'No. For the storybook and photo wall, guests point their phone camera at a QR code and a page opens. That’s it.'],
+  ['Can I use it at a bar, restaurant or function venue?', 'Yes. Open your link on the venue’s TV (any TV with a web browser, Chromecast or streaming stick). No laptop, USB stick or AV hire needed. Check with the venue when you book.'],
   ['What do I need on the day?', 'A TV with a web browser (most smart TVs have one), or a laptop plugged into the TV. Casting from a laptop works too. And Wi-Fi.'],
   ['Is it a subscription?', 'No. Every product is a one-time payment.'],
   ['Can I change my theme after buying?', 'Themes are made for your party when you buy, so pick the one you love. You can preview every theme first.'],
@@ -91,6 +92,24 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="section venue-band" id="venues">
+        <div className="venue-band-in">
+          <div>
+            <span className="badge-soft">21sts · weddings · work dos</span>
+            <h2>Having it at a bar or function venue?</h2>
+            <p className="muted">Skip the laptop on a chair, the USB stick the TV won’t read, and the venue’s screen system only staff can run. Your Wishcast link plays on the venue’s TVs from any web browser, and guests add photos with a QR code.</p>
+            <div className="venue-links">
+              <Link href="/ideas/display-photos-on-tv-at-venue">Photos on a venue TV</Link>
+              <Link href="/ideas/21st-birthday-photo-slideshow">21st ideas</Link>
+              <Link href="/ideas/work-christmas-party-ideas">Work Christmas parties</Link>
+              <Link href="/ideas/wedding-qr-code-photo-sharing">Weddings</Link>
+              <Link href="/ideas/corporate-event-photo-sharing">Corporate events</Link>
+            </div>
+          </div>
+          <Link className="btn btn-accent" href="/photo-wall">See the Party Photo Wall</Link>
+        </div>
+      </section>
+
       <section className="section" id="how">
         <h2>From checkout to party in three steps</h2>
         <ol className="steps">
@@ -113,7 +132,7 @@ export default function Home() {
         </div>
         <div className="home-news">
           <h2>Party ideas in your inbox</h2>
-          <p className="muted">New themes, party tips, and first dibs when packs are back. About once a month.</p>
+          <p className="muted">New themes, party tips and first dibs on new ideas. About once a month.</p>
           <SignupForm topic="news" button="Sign me up" note={`Unsubscribe any time. We never share your email.`} />
         </div>
       </section>
@@ -121,7 +140,7 @@ export default function Home() {
       <section className="section">
         <div className="shop-head"><h2>Party ideas and guides</h2><Link href="/ideas" className="muted">All party ideas →</Link></div>
         <div className="guide-grid" style={{ marginTop: 0 }}>
-          {GUIDES.slice(0, 3).map((g) => (
+          {['display-photos-on-tv-at-venue', 'kids-birthday-party-ideas', 'qr-code-party-ideas'].map((s) => GUIDES.find((x) => x.slug === s)!).map((g) => (
             <Link key={g.slug} href={`/ideas/${g.slug}`} className="guide-card">
               <span className="guide-kicker">{g.kicker}</span>
               <h3 style={{ fontSize: 22, fontWeight: 800 }}>{g.h1}</h3>

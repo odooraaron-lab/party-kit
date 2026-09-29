@@ -8,8 +8,8 @@ import { pageMeta, JsonLd, productLd } from '@/lib/seo';
 
 export const metadata = pageMeta(
   '/photo-wall',
-  'Party Photo Wall: Guests Scan a QR Code to Share Photos',
-  'Guests scan a QR code to upload party photos to one shared album that plays live on your TV. No app. Download every photo after. 21sts, 40ths, weddings. NZ.',
+  'Live Party Photo Wall: QR Code Photo Sharing on Any TV',
+  'Guests scan a QR code and their photos play live on the TV, at home or on a bar or function venue’s screens. 21sts, weddings, work Christmas parties. No app. NZ.',
 );
 
 export default function PhotoWallPage() {
