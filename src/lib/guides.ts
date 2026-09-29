@@ -419,6 +419,7 @@ export const GUIDES: Guide[] = [
       ['What do staff need to do?', 'Open the host’s web link on the TV at the start of the function. That’s it.'],
       ['Will it interfere with our screen system?', 'No. It’s just a web page on the TV. Switch back to your usual input afterwards.'],
       ['Can we use the same TVs for our own specials?', 'Yes. Our sister service, myQR Digital Signage (digitalsignage.myqr.co.nz), puts your food and drink specials and events on the same TVs for one flat monthly price.'],
+      ['Can guests leave the venue a Google review too?', 'Yes. Our sister site, myQR Review QR (reviews.myqr.co.nz), makes a print-ready Google review QR code sign and a TV slide for $5.99. Put the sign on the bar and the slide on your screens.'],
     ],
   },
   // ─────────── Kids & QR codes ───────────
