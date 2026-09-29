@@ -196,6 +196,10 @@ main { max-width: 1200px; margin: 0 auto; padding: 0 20px 64px; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .logo { display: inline-flex; align-items: center; gap: 10px; color: var(--ink); }
 .logo-word { font-family: var(--font-display), sans-serif; font-weight: 800; letter-spacing: -0.01em; line-height: 1; }
+.logo-text { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
+.logo-by { font-family: var(--font-body), sans-serif; font-weight: 800; letter-spacing: 0.08em; text-transform: none; color: var(--accent); line-height: 1; padding-left: 2px; }
+.site-footer .logo-by { color: #FFC857; }
+.logo-mark { overflow: visible; }
 .logo-link { text-decoration: none; display: inline-flex; border-radius: 12px; }
 .logo-link:hover .logo-balloon-a { transform: translateY(-2px); }
 .logo-link:hover .logo-balloon-b { transform: translateY(-3px); }
