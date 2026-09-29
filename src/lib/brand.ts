@@ -6,6 +6,7 @@
 // ─────────────────────────────────────────────────────────────
 export const BRAND = {
   name: 'Wishcast',
+  parent: 'myQR',   // the umbrella brand, shown small under the logo
   tagline: 'Birthday wishes, live on the big screen',
   announcement: 'No app, no downloads — guests just scan with their phone camera',
 };

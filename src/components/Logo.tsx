@@ -3,7 +3,7 @@ import { BRAND } from '@/lib/brand';
 // The mark: a little TV with balloon antennae and an open storybook on screen.
 export function LogoMark({ size = 40 }: { size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 48 48" aria-hidden="true" className="logo-mark">
+    <svg width={size} height={Math.round(size * 54 / 48)} viewBox="0 -6 48 54" aria-hidden="true" className="logo-mark" overflow="visible">
       <path d="M17 12 L12 3" stroke="#2E2140" strokeWidth="2.5" strokeLinecap="round" />
       <path d="M31 12 L37 2" stroke="#2E2140" strokeWidth="2.5" strokeLinecap="round" />
       <circle cx="11.5" cy="3.5" r="3.5" fill="#C23A64" stroke="#2E2140" strokeWidth="2" className="logo-balloon-a" />
@@ -17,12 +17,16 @@ export function LogoMark({ size = 40 }: { size?: number }) {
   );
 }
 
-// Mark + wordmark. The wordmark is set in the same hand-lettered face as the TV storybook.
+// Mark + wordmark, with a small "by myQR" underneath to tie the family of sites together.
+// The wordmark is set in the same hand-lettered face as the TV storybook.
 export function Logo({ size = 40 }: { size?: number }) {
   return (
     <span className="logo">
       <LogoMark size={size} />
-      <span className="logo-word" style={{ fontSize: size * 0.72 }}>{BRAND.name}</span>
+      <span className="logo-text">
+        <span className="logo-word" style={{ fontSize: size * 0.72 }}>{BRAND.name}</span>
+        <span className="logo-by" style={{ fontSize: Math.max(10, size * 0.27) }}>by {BRAND.parent}</span>
+      </span>
     </span>
   );
 }
