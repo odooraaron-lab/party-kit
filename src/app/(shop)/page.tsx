@@ -107,7 +107,7 @@ export default function Home() {
           <LogoMark size={72} />
           <div>
             <h2>Made by parents in New Zealand</h2>
-            <p className="muted">[ONE OR TWO LINES ABOUT WHO YOU ARE.] We make party ideas that get everyone involved, from Nana to the shyest six-year-old.</p>
+            <p className="muted">When we hosted our own kids’ party, we couldn’t find anything that got every guest joining in, so we made it. Now we make party ideas that get everyone involved, from Nana to the shyest six-year-old.</p>
             <Link href="/contact#about" className="tile-cta">Read our story</Link>
           </div>
         </div>

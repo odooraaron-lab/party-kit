@@ -30,8 +30,7 @@ export function VideoFeature({ src, poster, youtubeId, captions, title, text, lo
             <span className="video-play" aria-hidden="true">
               <svg width="34" height="34" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor" /></svg>
             </span>
-            <b>[YOUR VIDEO GOES HERE]</b>
-            <span>Set it in <code>STORY_VIDEO</code> in src/lib/story.ts</span>
+            <b>Video coming soon</b>
           </div>
         )}
       </div>
