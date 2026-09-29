@@ -17,7 +17,7 @@ export function LogoMark({ size = 40 }: { size?: number }) {
   );
 }
 
-// Mark + wordmark, with a small "by myQR" underneath to tie the family of sites together.
+// Mark + wordmark, with a small "myQR" underneath to tie the family of sites together.
 // The wordmark is set in the same hand-lettered face as the TV storybook.
 export function Logo({ size = 40 }: { size?: number }) {
   return (
@@ -25,7 +25,7 @@ export function Logo({ size = 40 }: { size?: number }) {
       <LogoMark size={size} />
       <span className="logo-text">
         <span className="logo-word" style={{ fontSize: size * 0.72 }}>{BRAND.name}</span>
-        <span className="logo-by" style={{ fontSize: Math.max(10, size * 0.27) }}>by {BRAND.parent}</span>
+        <span className="logo-by" style={{ fontSize: Math.max(10, size * 0.27) }}>{BRAND.parent}</span>
       </span>
     </span>
   );
