@@ -12,4 +12,8 @@ const nextConfig = {
     '/party/[slug]/[page]': ['./party-app/templates/**/*', './party-app/photos/**/*', './party-app/slideshow/**/*'],
   },
 };
+// Stock items (party packs, decorations…) are hidden for now: send their old pages to the shop.
+nextConfig.redirects = async () => [
+  { source: '/products/:id', destination: '/products', permanent: false },
+];
 export default nextConfig;

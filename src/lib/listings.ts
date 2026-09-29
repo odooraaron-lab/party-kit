@@ -101,13 +101,8 @@ export const STOCK: StockListing[] = [
   },
 ];
 
-// Grid order: apps are placed among the stock on purpose.
-const S = (id: string) => STOCK.find((x) => x.id === id)!;
-export const LISTINGS: Listing[] = [
-  APPS[0], S('party-pack'), S('balloon-kit'), S('invite-set'),
-  APPS[1], S('candles'), S('party-bags'), S('bunting'),
-  APPS[2], S('cups'), S('props'), S('confetti'), S('toppers'),
-];
+// Only the three apps are shown for now. The stock items stay defined above so they can come back later.
+export const LISTINGS: Listing[] = [...APPS];
 
 export const getStock = (id: string) => STOCK.find((x) => x.id === id);
 export const listingHref = (l: Listing) => (l.kind === 'app' ? l.href : `/products/${l.id}`);
