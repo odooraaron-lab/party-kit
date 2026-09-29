@@ -22,6 +22,7 @@ export async function GET(req: Request) {
 <html lang="en-NZ"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
 <title>Connect this TV - ${esc(BRAND.name)}</title>
 <style>
 html,body{margin:0;height:100%;background:#2E2140;color:#FFFDF6;font-family:Nunito,'Segoe UI',Verdana,sans-serif}
