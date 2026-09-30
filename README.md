@@ -234,3 +234,12 @@ and `checkout.session.async_payment_failed`.
 - **Personalised printables** — generate PDFs with the child's name from Stripe's custom field.
 - **QR guest app hookup** — create the party page automatically in the webhook and email its QR code.
 - **Party-date warning** — warn at checkout if standard shipping won't arrive before the party.
+
+## QR Buddy on the same wildcard
+
+QR Buddy (github.com/odooraaron-lab/QRpet) gives each buddy an address like `teddy.myqr.co.nz`. This
+site owns `*.myqr.co.nz`, so `src/middleware.ts` asks the buddy app (`BUDDY_ORIGIN/api/registry/<name>`,
+cached for a few minutes) and forwards buddy names to `BUDDY_ORIGIN/b/<name>/…` with an `x-qb-buddy` header.
+Both apps check each other before giving out a name: new parties skip buddy names (`src/lib/provision.ts`),
+and the buddy app calls `/api/slug-status?s=<name>` here. `create`, `login` and `buddy` are reserved.
+Set `BUDDY_ORIGIN=https://create.myqr.co.nz` in Vercel to switch it on.
