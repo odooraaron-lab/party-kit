@@ -4,9 +4,10 @@ const SITES = [
   { id: 'ideas', name: 'Party ideas', blurb: '21sts, kids parties, QR photos', href: 'https://myqr.co.nz/ideas' },
   { id: 'signage', name: 'Digital Signage', blurb: 'Specials on your venue’s TVs', href: 'https://digitalsignage.myqr.co.nz' },
   { id: 'resthome', name: 'Resthome TV', blurb: 'Family photos on Nana’s TV', href: 'https://resthome.myqr.co.nz' },
+  { id: 'reviews', name: 'Review QR', blurb: 'Google review QR code signs', href: 'https://reviews.myqr.co.nz' },
 ];
 
-export function MyqrFamily({ current }: { current: 'wishcast' | 'signage' | 'resthome' }) {
+export function MyqrFamily({ current }: { current: 'wishcast' | 'signage' | 'resthome' | 'reviews' }) {
   return (
     <nav className="myqr-family" aria-label="More from myQR">
       <b>More from myQR</b>
