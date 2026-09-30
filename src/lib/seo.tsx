@@ -51,6 +51,7 @@ export const productLd = (p: { name: string; description: string; path: string; 
   ...(p.category ? { category: p.category } : {}),
   offers: {
     '@type': 'Offer',
+    ...DIGITAL_OFFER,
     price: (p.price / 100).toFixed(2),
     priceCurrency: 'NZD',
     availability: `https://schema.org/${p.available ?? 'InStock'}`,
@@ -64,3 +65,23 @@ export const breadcrumbLd = (items: { name: string; path: string }[]) => ({
   '@type': 'BreadcrumbList',
   itemListElement: items.map((it, i) => ({ '@type': 'ListItem', position: i + 1, name: it.name, item: `${SITE}${it.path}` })),
 });
+
+// Digital products: delivered instantly online in NZ, so shipping is free and immediate. Returns follow our
+// terms (no refunds except where the law requires). Google asks for both on merchant listings.
+export const DIGITAL_OFFER = {
+  shippingDetails: {
+    '@type': 'OfferShippingDetails',
+    shippingRate: { '@type': 'MonetaryAmount', value: '0', currency: 'NZD' },
+    shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'NZ' },
+    deliveryTime: {
+      '@type': 'ShippingDeliveryTime',
+      handlingTime: { '@type': 'QuantitativeValue', minValue: 0, maxValue: 0, unitCode: 'DAY' },
+      transitTime: { '@type': 'QuantitativeValue', minValue: 0, maxValue: 0, unitCode: 'DAY' },
+    },
+  },
+  hasMerchantReturnPolicy: {
+    '@type': 'MerchantReturnPolicy',
+    applicableCountry: 'NZ',
+    returnPolicyCategory: 'https://schema.org/MerchantReturnNotPermitted',
+  },
+};
