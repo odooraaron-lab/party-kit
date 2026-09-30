@@ -1,4 +1,4 @@
-const RESERVED = new Set(['www', 'app', 'api', 'admin', 'mail', 'shop', 'help', 'support', 'blog', 'static', 'assets', 'p', 'tv', 'dev', 'test', 'hq', 'resthome', 'care', 'digitalsignage', 'signage', 'reviews', 'review', 'reviewqr']);
+const RESERVED = new Set(['www', 'app', 'api', 'admin', 'mail', 'shop', 'help', 'support', 'blog', 'static', 'assets', 'p', 'tv', 'dev', 'test', 'hq', 'resthome', 'care', 'digitalsignage', 'signage', 'reviews', 'review', 'reviewqr', 'create', 'login', 'buddy', 'buddies']);
 
 // "Poppy-Rose O'Neil" → "poppy-rose-oneil"
 export function baseSlug(name: string): string {

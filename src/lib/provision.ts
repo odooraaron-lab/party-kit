@@ -6,6 +6,7 @@ import { STORY_PRODUCT, getTheme, cleanName } from './story';
 import { PHOTO_PRODUCT, getPhotoTheme, cleanEventName } from './photos';
 import { SLIDESHOW_PRODUCT, cleanTitle } from './slideshow-config';
 import { baseSlug } from './slug';
+import { isBuddy } from './buddy';
 import { partyUrl } from './urls';
 import { siteUrl } from './stripe';
 import { sendEmail, escapeHtml } from './email';
@@ -49,6 +50,7 @@ export async function provisionParty(session: Stripe.Checkout.Session): Promise<
   expires.setMonth(expires.getMonth() + months);
 
   for (const slug of slugCandidates(slugBase)) {
+    if (await isBuddy(slug)) continue; // a QR Buddy already lives at this address
     const party: Party = {
       slug, product: slideshow ? 'slideshow' : photos ? 'photos' : 'story', childName, age, style, email, sessionId: session.id,
       hostKey: newHostKey(), settings: {},
