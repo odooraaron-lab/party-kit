@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
     if (event.type !== 'email.received') {
       return NextResponse.json({ ignored: event.type });
     }
-
+const FORWARD_FROM = 'MyQR Inbox <forwarder@myqr.co.nz>';
     // Fetches the original email (body + attachments) and sends it on, unchanged.
     const { data, error } = await resend.emails.receiving.forward({
       emailId: event.data.email_id,
